@@ -4,11 +4,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.lapilearn.model.DocenteUiState
 import com.example.lapilearn.model.DocenteErrores
+import kotlinx.coroutines.flow.asStateFlow
 
 class DocenteViewModel : ViewModel(){
 
     private val _uiState = MutableStateFlow(DocenteUiState())
-    val uiState: StateFlow<DocenteUiState> = _uiState
+    val uiState: StateFlow<DocenteUiState> = _uiState.asStateFlow()
 
     fun onCorreoChange(valor: String) {
         _uiState.value = _uiState.value.copy(
