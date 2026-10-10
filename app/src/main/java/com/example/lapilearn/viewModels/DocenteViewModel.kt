@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.example.lapilearn.model.DocenteUiState
 import com.example.lapilearn.model.DocenteErrores
+import com.example.lapilearn.utils.isValidEmail
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class DocenteViewModel : ViewModel(){
 
@@ -12,42 +14,48 @@ class DocenteViewModel : ViewModel(){
     val uiState: StateFlow<DocenteUiState> = _uiState.asStateFlow()
 
     fun onCorreoChange(valor: String) {
-        _uiState.value = _uiState.value.copy(
-            correo = valor,
-            errores = _uiState.value.errores.copy(correo = null)
-        )
+        _uiState.update {
+            it.copy(
+                correo = valor,
+                errores = it.errores.copy(correo = null)
+            )
+        }
     }
 
     fun onContrasenaChange(valor: String) {
-        _uiState.value = _uiState.value.copy(
-            contrasena = valor,
-            errores = _uiState.value.errores.copy(contrasena = null)
-        )
+        _uiState.update {
+            it.copy(
+                contrasena = valor,
+                errores = it.errores.copy(contrasena = null)
+            )
+        }
     }
 
     fun validarFormulario(): Boolean {
         val estado = _uiState.value
-        var nuevoCorreo: String? = null
-        var nuevaContrasena: String? = null
 
-        if (estado.correo.isBlank()) {
-            nuevoCorreo = "Campo obligatorio"
-        } else if (!estado.correo.contains("@")) {
-            nuevoCorreo = "Correo inválido"
+        val nuevoCorreo = when {
+            estado.correo.isBlank() -> "El correo es obligatorio"
+            !estado.correo.isValidEmail() -> "El correo no tiene un formato válido"
+            else -> null
         }
 
-        if (estado.contrasena.isBlank()) {
-            nuevaContrasena = "Campo obligatorio"
-        } else if (estado.contrasena.length < 6) {
-            nuevaContrasena = "Debe tener al menos 6 caracteres"
+        val nuevaContrasena = when {
+            estado.contrasena.isBlank() -> "La contraseña es obligatoria"
+            estado.contrasena.length < 6 -> "Debe tener al menos 6 caracteres"
+            else -> null
         }
 
         val hayErrores = nuevoCorreo != null || nuevaContrasena != null
 
-        _uiState.value = _uiState.value.copy(
-            errores = DocenteErrores(correo = nuevoCorreo, contrasena = nuevaContrasena)
-        )
-
+        _uiState.update {
+            it.copy(
+                errores = DocenteErrores(
+                    correo = nuevoCorreo,
+                    contrasena = nuevaContrasena
+                )
+            )
+        }
         return !hayErrores
     }
 
