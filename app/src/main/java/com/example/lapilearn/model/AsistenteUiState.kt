@@ -1,4 +1,4 @@
-package com.example.lapilearn.viewModels.model
+package com.example.lapilearn.model
 
 data class AsistenteUiState(
     val correo: String = "",

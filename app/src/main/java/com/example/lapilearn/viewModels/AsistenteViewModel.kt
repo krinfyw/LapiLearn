@@ -3,8 +3,8 @@ package com.example.lapilearn.viewModels
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.example.lapilearn.viewModels.model.AsistenteUiState
-import com.example.lapilearn.viewModels.model.AsistenteErrores
+import com.example.lapilearn.model.AsistenteUiState
+import com.example.lapilearn.model.AsistenteErrores
 
 class AsistenteViewModel: ViewModel() {
 

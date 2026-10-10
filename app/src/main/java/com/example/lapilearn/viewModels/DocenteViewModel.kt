@@ -2,8 +2,8 @@ package com.example.lapilearn.viewModels
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.example.lapilearn.viewModels.model.DocenteUiState
-import com.example.lapilearn.viewModels.model.DocenteErrores
+import com.example.lapilearn.model.DocenteUiState
+import com.example.lapilearn.model.DocenteErrores
 
 class DocenteViewModel : ViewModel(){
 
