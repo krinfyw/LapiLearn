@@ -12,15 +12,18 @@ import com.example.lapilearn.ui.screens.LoginAsistenteScreen
 import com.example.lapilearn.ui.screens.ResumenDocenteScreen
 import com.example.lapilearn.ui.screens.ResumenAsistenteScreen
 import com.example.lapilearn.ui.screens.CatalogoActividades
+import com.example.lapilearn.ui.screens.estudiante.EstudiantePregunta
 import com.example.lapilearn.ui.screens.estudiante.IngresoCodigoScreen
 import com.example.lapilearn.viewModels.DocenteViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
+import com.example.lapilearn.viewModels.EstudianteViewModel
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
     val docenteViewModel: DocenteViewModel = viewModel()
     val asistenteViewModel: AsistenteViewModel = viewModel()
+    val estudianteViewModel: EstudianteViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
@@ -42,7 +45,10 @@ fun AppNavigation() {
             ResumenAsistenteScreen(viewModel = asistenteViewModel)
         }
         composable (Screen.EstudianteIngresoCodigo.route){
-            IngresoCodigoScreen(navController = navController)
+            IngresoCodigoScreen(navController= navController, viewModel = estudianteViewModel)
+        }
+        composable ("estudiante_pregunta"){
+            EstudiantePregunta()
         }
     }
 }

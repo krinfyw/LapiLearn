@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,16 +18,40 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.lapilearn.model.EstudianteUiState
+import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.viewModels.EstudianteViewModel
 
 @Composable
 fun IngresoCodigoScreen(
-    modifier: Modifier = Modifier,
+    viewModel: EstudianteViewModel,
     navController: NavController
     ){
-    var codigo by remember { mutableStateOf("") }
+
+    val estado by viewModel.uiState.collectAsStateWithLifecycle()
+    FormularioCodigo(
+        estado = estado,
+        onCodigoChange = viewModel::onCodigoChange,
+        onIngresarClick = {
+            navController.navigate(Screen.EstudiantePregunta.route)
+        }
+    )
+}
+
+@Composable
+fun FormularioCodigo(
+    estado: EstudianteUiState,
+    onCodigoChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    onIngresarClick: () -> Unit
+    ){
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -40,15 +66,29 @@ fun IngresoCodigoScreen(
 
         Text(
             text = "Ingesa el código que te dio tu profesora o asistente",
-            modifier.padding(16.dp),
-            color = Color.Gray
+            fontSize = 16.sp,
+            color = Color.Gray,
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         CampoTexto(
-            valor ="",
+            valor =estado.codigo,
             etiqueta = "codigo",
-            onChange = { codigo = it }
+            onChange = onCodigoChange,
+            error = estado.errores.codigo
         )
 
+        Button(
+            onClick = onIngresarClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF2C6E7F),
+                contentColor = Color.White
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Ingresar")
+        }
     }
 }
+
