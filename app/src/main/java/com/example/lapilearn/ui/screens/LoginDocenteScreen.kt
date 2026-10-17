@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.DocenteUiState
+import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.DocenteViewModel
 
@@ -52,20 +53,7 @@ fun FormularioLoginDocente(
     ) {
         Spacer(Modifier.height(56.dp))
 
-        Text(
-            text = "Iniciar sesión",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+        Cabecera("Iniciar sesión")
 
         Spacer(Modifier.height(12.dp))
 

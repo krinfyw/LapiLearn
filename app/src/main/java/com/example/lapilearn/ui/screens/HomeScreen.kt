@@ -40,6 +40,7 @@ fun HomeScreen(
             Text(text = "🔢", fontSize = 28.sp)
         }
 
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -110,7 +111,7 @@ fun HomeScreen(
 
             OutlinedButton(
                 onClick = {
-                    // TODO: Navegación a pantalla Estudiante (código)
+                    navController.navigate(Screen.EstudianteIngresoCodigo.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

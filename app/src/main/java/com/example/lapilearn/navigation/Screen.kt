@@ -6,6 +6,7 @@ sealed class Screen(val route: String) {
     data object AsistenteLogin : Screen(route = "asistente_login")
 
     data object DocenteDashboard : Screen(route = "docente_dashboard")
+    data object EstudianteIngresoCodigo: Screen(route = "ingreso_codigo")
 
     data class Detail(val itemId: String) : Screen(route = "detail_page/{itemId}") {
         fun buildRoute(): String {
