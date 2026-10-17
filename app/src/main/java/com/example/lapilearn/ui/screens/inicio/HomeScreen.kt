@@ -1,4 +1,4 @@
-package com.example.lapilearn.ui.screens
+package com.example.lapilearn.ui.screens.inicio
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,6 +39,7 @@ fun HomeScreen(
             Text(text = "➕", fontSize = 28.sp)
             Text(text = "🔢", fontSize = 28.sp)
         }
+
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -110,7 +111,7 @@ fun HomeScreen(
 
             OutlinedButton(
                 onClick = {
-                    // TODO: Navegación a pantalla Estudiante (código)
+                    navController.navigate(Screen.EstudianteIngresoCodigo.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

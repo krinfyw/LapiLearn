@@ -1,4 +1,4 @@
-package com.example.lapilearn.ui.screens
+package com.example.lapilearn.ui.screens.inicio
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -6,14 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.AsistenteUiState
+import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.AsistenteViewModel
 
@@ -54,20 +52,9 @@ fun FormularioLoginAsistente(
     ) {
         // Campo Correo
         Spacer(Modifier.height(56.dp))
-        Text(
-            text = "Iniciar sesión",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        Spacer(Modifier.height(16.dp))
+        Cabecera("Iniciar sesión")
 
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
         Spacer(Modifier.height(12.dp))
         CampoTexto(
             valor = estado.correo,
