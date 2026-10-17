@@ -1,15 +1,21 @@
+# Gradle
+.gradle/
+/build/
+/*/build/
+
+# Archivos de configuración local de Android Studio / IntelliJ
+.idea/
 *.iml
-.gradle
+
+# Archivos de configuración local y claves (NUNCA SUBIR)
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
 local.properties
+
+# Archivos generados por ejecuciones, builds nativos y capturas
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
