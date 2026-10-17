@@ -1,4 +1,4 @@
-package com.example.lapilearn.ui.screens
+package com.example.lapilearn.ui.screens.inicio
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

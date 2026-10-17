@@ -1,4 +1,4 @@
-package com.example.lapilearn.ui.screens
+package com.example.lapilearn.ui.screens.docente
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -154,7 +155,7 @@ fun ActividadCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = CardDefaults.outlinedCardBorder(true).copy(brush = androidx.compose.ui.graphics.SolidColor(lineColor)),
+        border = CardDefaults.outlinedCardBorder(true).copy(brush = SolidColor(lineColor)),
         shape = RoundedCornerShape(14.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

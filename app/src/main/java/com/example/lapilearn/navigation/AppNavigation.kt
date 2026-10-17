@@ -2,16 +2,15 @@ package com.example.lapilearn.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.lapilearn.ui.screens.HomeScreen
-import com.example.lapilearn.ui.screens.LoginDocenteScreen
-import com.example.lapilearn.ui.screens.LoginAsistenteScreen
-import com.example.lapilearn.ui.screens.ResumenDocenteScreen
-import com.example.lapilearn.ui.screens.ResumenAsistenteScreen
-import com.example.lapilearn.ui.screens.CatalogoActividades
+import com.example.lapilearn.ui.screens.inicio.HomeScreen
+import com.example.lapilearn.ui.screens.inicio.LoginDocenteScreen
+import com.example.lapilearn.ui.screens.inicio.LoginAsistenteScreen
+import com.example.lapilearn.ui.screens.docente.ResumenDocenteScreen
+import com.example.lapilearn.ui.screens.asistente.ResumenAsistenteScreen
+import com.example.lapilearn.ui.screens.docente.CatalogoActividades
 import com.example.lapilearn.ui.screens.estudiante.EstudiantePregunta
 import com.example.lapilearn.ui.screens.estudiante.IngresoCodigoScreen
 import com.example.lapilearn.viewModels.DocenteViewModel
