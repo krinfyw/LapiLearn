@@ -28,7 +28,7 @@ fun LoginDocenteScreen(
         onCorreoChange = viewModel::onCorreoChange,
         onContrasenaChange = viewModel::onContrasenaChange,
         onIngresarClick = {
-            if (viewModel.validarFormulario()) {
+            viewModel.loginDocente {
                 navController.navigate("resumen_docente")
             }
         }

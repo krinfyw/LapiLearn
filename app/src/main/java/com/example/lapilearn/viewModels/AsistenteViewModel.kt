@@ -1,15 +1,21 @@
 package com.example.lapilearn.viewModels
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.lapilearn.data.local.AppDatabase
 import com.example.lapilearn.model.AsistenteUiState
 import com.example.lapilearn.model.AsistenteErrores
 import com.example.lapilearn.utils.isValidEmail
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class AsistenteViewModel: ViewModel() {
+class AsistenteViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val asistenteDao = AppDatabase.getInstance(application).asistenteDao()
 
     private val _uiState = MutableStateFlow(AsistenteUiState())
     val uiState: StateFlow<AsistenteUiState> = _uiState.asStateFlow()
@@ -58,5 +64,21 @@ class AsistenteViewModel: ViewModel() {
             )
         }
         return !hayErrores
+    }
+
+    fun loginAsistente(onExito: () -> Unit) {
+        if (!validarFormulario()) return
+
+        val estado = _uiState.value
+        viewModelScope.launch {
+            val asistente = asistenteDao.login(estado.correo, estado.contrasena)
+            if (asistente != null) {
+                onExito()
+            } else {
+                _uiState.update {
+                    it.copy(errores = it.errores.copy(contrasena = "Correo o contraseña incorrectos"))
+                }
+            }
+        }
     }
 }

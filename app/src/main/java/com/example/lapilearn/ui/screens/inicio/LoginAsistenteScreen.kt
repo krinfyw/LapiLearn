@@ -28,7 +28,7 @@ fun LoginAsistenteScreen(
         onCorreoChange = viewModel::onCorreoChange,
         onContrasenaChange = viewModel::onContrasenaChange,
         onIngresarClick = {
-            if (viewModel.validarFormulario()) {
+            viewModel.loginAsistente {
                 navController.navigate("resumen_asistente")
             }
         }
