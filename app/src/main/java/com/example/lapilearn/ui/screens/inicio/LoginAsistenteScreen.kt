@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.AsistenteUiState
+import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.AsistenteViewModel
@@ -28,8 +29,11 @@ fun LoginAsistenteScreen(
         onCorreoChange = viewModel::onCorreoChange,
         onContrasenaChange = viewModel::onContrasenaChange,
         onIngresarClick = {
-            if (viewModel.validarFormulario()) {
-                navController.navigate("resumen_asistente")
+            if (viewModel.iniciarSesion()) {
+                navController.navigate(Screen.AsistentePanel.route) {
+                    // Al volver atrás no se regresa al login
+                    popUpTo(Screen.AsistenteLogin.route) { inclusive = true }
+                }
             }
         }
     )
@@ -74,6 +78,16 @@ fun FormularioLoginAsistente(
             error = estado.errores.contrasena,
             esContrasena = true
         )
+
+        // Error de cuenta de prueba (correo/contraseña no coinciden)
+        if (estado.errores.credenciales != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = estado.errores.credenciales,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 

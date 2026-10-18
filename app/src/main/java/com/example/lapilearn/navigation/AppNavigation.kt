@@ -9,11 +9,13 @@ import com.example.lapilearn.ui.screens.inicio.HomeScreen
 import com.example.lapilearn.ui.screens.inicio.LoginDocenteScreen
 import com.example.lapilearn.ui.screens.inicio.LoginAsistenteScreen
 import com.example.lapilearn.ui.screens.docente.ResumenDocenteScreen
-import com.example.lapilearn.ui.screens.asistente.ResumenAsistenteScreen
+import com.example.lapilearn.ui.screens.asistente.AsistentePanelScreen
+import com.example.lapilearn.ui.screens.asistente.AsistenteResultadosScreen
 import com.example.lapilearn.ui.screens.docente.CatalogoActividades
 import com.example.lapilearn.ui.screens.estudiante.EstudiantePregunta
 import com.example.lapilearn.ui.screens.estudiante.IngresoCodigoScreen
 import com.example.lapilearn.viewModels.DocenteViewModel
+import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
 import com.example.lapilearn.viewModels.EstudianteViewModel
 
@@ -23,6 +25,7 @@ fun AppNavigation() {
     val docenteViewModel: DocenteViewModel = viewModel()
     val asistenteViewModel: AsistenteViewModel = viewModel()
     val estudianteViewModel: EstudianteViewModel = viewModel()
+    val asistentePanelViewModel: AsistentePanelViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
@@ -40,8 +43,23 @@ fun AppNavigation() {
         composable("resumen_docente") {
             ResumenDocenteScreen(viewModel = docenteViewModel)
         }
-        composable("resumen_asistente") {
-            ResumenAsistenteScreen(viewModel = asistenteViewModel)
+        composable(Screen.AsistentePanel.route) {
+            AsistentePanelScreen(
+                navController = navController,
+                viewModel = asistentePanelViewModel,
+                onCerrarSesion = {
+                    asistenteViewModel.cerrarSesion()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable(Screen.AsistenteResultados.route) {
+            AsistenteResultadosScreen(
+                navController = navController,
+                viewModel = asistentePanelViewModel
+            )
         }
         composable (Screen.EstudianteIngresoCodigo.route){
             IngresoCodigoScreen(navController= navController, viewModel = estudianteViewModel)
