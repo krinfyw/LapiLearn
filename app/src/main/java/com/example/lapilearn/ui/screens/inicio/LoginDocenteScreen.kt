@@ -14,6 +14,7 @@ import com.example.lapilearn.model.DocenteUiState
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.DocenteViewModel
+import com.example.lapilearn.navigation.Screen
 
 // 1. Composable Contenedor (Stateful)
 @Composable
@@ -28,8 +29,8 @@ fun LoginDocenteScreen(
         onCorreoChange = viewModel::onCorreoChange,
         onContrasenaChange = viewModel::onContrasenaChange,
         onIngresarClick = {
-            if (viewModel.validarFormulario()) {
-                navController.navigate("resumen_docente")
+            viewModel.loginDocente {
+                navController.navigate(Screen.DocenteDashboard.route)
             }
         }
     )

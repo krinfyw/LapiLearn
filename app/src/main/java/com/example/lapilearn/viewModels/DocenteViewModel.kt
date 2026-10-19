@@ -1,14 +1,20 @@
 package com.example.lapilearn.viewModels
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.lapilearn.data.local.AppDatabase
 import com.example.lapilearn.model.DocenteUiState
 import com.example.lapilearn.model.DocenteErrores
 import com.example.lapilearn.utils.isValidEmail
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class DocenteViewModel : ViewModel(){
+class DocenteViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val docenteDao = AppDatabase.getInstance(application).docenteDao()
 
     private val _uiState = MutableStateFlow(DocenteUiState())
     val uiState: StateFlow<DocenteUiState> = _uiState.asStateFlow()
@@ -59,4 +65,20 @@ class DocenteViewModel : ViewModel(){
         return !hayErrores
     }
 
+    // Valida el formulario y consulta la BD. Si las credenciales existen, llama onExito.
+    fun loginDocente(onExito: () -> Unit) {
+        if (!validarFormulario()) return
+
+        val estado = _uiState.value
+        viewModelScope.launch {
+            val docente = docenteDao.login(estado.correo, estado.contrasena)
+            if (docente != null) {
+                onExito()
+            } else {
+                _uiState.update {
+                    it.copy(errores = it.errores.copy(contrasena = "Correo o contraseña incorrectos"))
+                }
+            }
+        }
+    }
 }
