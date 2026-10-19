@@ -1,3 +1,4 @@
+
 package com.example.lapilearn.ui.screens.docente
 
 import androidx.compose.foundation.layout.*
@@ -16,9 +17,11 @@ import androidx.navigation.NavController
 import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.viewModels.ActividadViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogoActividades(navController: NavController, viewModel: ActividadViewModel) {
+fun CatalogoActividades(
+    navController: NavController,
+    viewModel: ActividadViewModel
+) {
     val creamBg = Color(0xFFFBF8F2)
     val inkText = Color(0xFF22303A)
     val tealColor = Color(0xFF2C6E7F)
@@ -31,16 +34,42 @@ fun CatalogoActividades(navController: NavController, viewModel: ActividadViewMo
 
     val actividades by viewModel.actividades.collectAsStateWithLifecycle()
 
-    var cursoExpandido by remember { mutableStateOf(false) }
-    var cursoSeleccionado by remember { mutableStateOf<String?>(null) }
-    val cursos = listOf("1° básico", "2° básico", "3° básico", "4° básico")
+    var moduloSeleccionado by remember {
+        mutableStateOf("Lectura")
+    }
+    var cursoSeleccionado by remember {
+        mutableStateOf("2° básico")
+    }
+    var cursoExpandido by remember {
+        mutableStateOf(false)
+    }
+    val cursos = listOf(
+        "1° básico",
+        "2° básico",
+        "3° básico",
+        "4° básico"
+    )
+
+    // FILTRAR ACTIVIDADES POR MÓDULO Y CURSO
+    val actividadesFiltradas = actividades.filter {
+        it.modulo == moduloSeleccionado &&
+                it.curso == cursoSeleccionado
+    }
 
     Scaffold(
         containerColor = creamBg,
         topBar = {
-            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Perfil: Docente / UTP", fontSize = 12.sp, color = Color.Gray)
+                Text(
+                    text = "Perfil: Docente / UTP",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
                 Text(
                     text = "Catálogo de actividades",
                     fontSize = 20.sp,
@@ -59,55 +88,105 @@ fun CatalogoActividades(navController: NavController, viewModel: ActividadViewMo
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Fila de filtros
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(containerColor = tealLight)
-                        ) {
-                            Text("Lectura", color = tealColor, fontWeight = FontWeight.Bold)
-                        }
-                        Button(
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(containerColor = coralLight)
-                        ) {
-                            Text("Matemática", color = coralColor, fontWeight = FontWeight.Bold)
-                        }
-                    }
 
-                    // Selector de curso: el botón y la lista quedan alineados a la derecha
-                    Column(horizontalAlignment = Alignment.End) {
+            // FILTROS DE MÓDULO
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement =
+                            Arrangement.spacedBy(8.dp)
+                    ) {
                         Button(
-                            onClick = { cursoExpandido = !cursoExpandido },
+                            onClick = {
+                                moduloSeleccionado = "Lectura"
+                            },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Gray
+                                containerColor =
+                                    if (moduloSeleccionado == "Lectura")
+                                        tealColor
+                                    else tealLight
                             )
                         ) {
-                            Text(text = "📋 ${cursoSeleccionado ?: "Curso"}", fontSize = 12.sp)
+                            Text(
+                                text = "Lectura",
+                                color =
+                                    if (moduloSeleccionado == "Lectura")
+                                        Color.White
+                                    else tealColor,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
+                        Button(
+                            onClick = {
+                                moduloSeleccionado = "Matemática"
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor =
+                                    if (moduloSeleccionado == "Matemática")
+                                        coralColor
+                                    else coralLight
+                            )
+                        ) {
+                            Text(
+                                text = "Matemática",
+                                color =
+                                    if (moduloSeleccionado == "Matemática")
+                                        Color.White
+                                    else coralColor,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                        if (cursoExpandido) {
+                    // SELECCIONAR CURSO
+                    Button(
+                        onClick = {
+                            cursoExpandido = !cursoExpandido
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = inkText
+                        )
+                    ) {
+                        Text(
+                            text = "📋 Curso: $cursoSeleccionado"
+                        )
+                    }
+                    if (cursoExpandido) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(4.dp)
+                        ) {
                             for (curso in cursos) {
                                 Button(
                                     onClick = {
                                         cursoSeleccionado = curso
                                         cursoExpandido = false
                                     },
+                                    modifier = Modifier.weight(1f),
+                                    contentPadding = PaddingValues(
+                                        horizontal = 2.dp,
+                                        vertical = 8.dp
+                                    ),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.White,
-                                        contentColor = if (curso == cursoSeleccionado) tealColor else inkText
+                                        containerColor =
+                                            if (cursoSeleccionado == curso)
+                                                tealColor
+                                            else Color.White,
+                                        contentColor =
+                                            if (cursoSeleccionado == curso)
+                                                Color.White
+                                            else inkText
                                     )
                                 ) {
                                     Text(
                                         text = curso,
-                                        fontWeight = if (curso == cursoSeleccionado) FontWeight.Bold else FontWeight.Normal
+                                        fontSize = 10.sp
                                     )
                                 }
                             }
@@ -116,30 +195,58 @@ fun CatalogoActividades(navController: NavController, viewModel: ActividadViewMo
                 }
             }
 
-            // Tarjetas según los datos del ViewModel
-            items(actividades) { actividad ->
-                val disponible = actividad.estado == "Disponible"
+            // ACTIVIDADES FILTRADAS
+            items(actividadesFiltradas) { actividad ->
+                val disponible =
+                    actividad.estado == "Disponible"
                 ActividadCard(
                     titulo = actividad.titulo,
-                    descripcion = "${actividad.modulo} · ${actividad.objetivo} · ${actividad.curso}",
+                    descripcion =
+                        "${actividad.modulo} · ${actividad.objetivo} · ${actividad.curso}",
                     estado = actividad.estado,
-                    estadoColor = if (disponible) okColor else Color.Gray,
-                    estadoBg = if (disponible) okLight else Color(0xFFF3EFE4),
+                    estadoColor =
+                        if (disponible) okColor
+                        else Color.Gray,
+                    estadoBg =
+                        if (disponible) okLight
+                        else Color(0xFFF3EFE4),
                     onEditarClick = {
                         viewModel.seleccionar(actividad.id)
-                        navController.navigate(Screen.EditarActividad.route)
+                        navController.navigate(
+                            Screen.EditarActividad.route
+                        )
                     }
                 )
             }
 
-            // Botón de nueva actividad
+            // MENSAJE SI NO HAY ACTIVIDADES
+            if (actividadesFiltradas.isEmpty()) {
+                item {
+                    Text(
+                        text = "No hay actividades de $moduloSeleccionado para $cursoSeleccionado",
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            // NUEVA ACTIVIDAD
             item {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate(
+                            Screen.NuevaActividad.route
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = tealColor)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = tealColor
+                    )
                 ) {
-                    Text("+ Nueva actividad", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "+ Nueva actividad",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         }
@@ -161,7 +268,9 @@ fun ActividadCard(
         tonalElevation = 2.dp,
         color = Color.White
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
             Text(
                 text = titulo,
                 fontWeight = FontWeight.Bold,
@@ -169,25 +278,35 @@ fun ActividadCard(
                 color = Color(0xFF22303A)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = descripcion, fontSize = 14.sp, color = Color.Gray)
 
+            Text(
+                text = descripcion,
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement =
+                    Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(color = estadoBg, shape = MaterialTheme.shapes.small) {
+                Surface(
+                    color = estadoBg,
+                    shape = MaterialTheme.shapes.small
+                ) {
                     Text(
                         text = estado,
                         color = estadoColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(
+                            horizontal = 10.dp,
+                            vertical = 4.dp
+                        )
                     )
                 }
-
                 Button(
                     onClick = onEditarClick,
                     colors = ButtonDefaults.buttonColors(
@@ -195,7 +314,10 @@ fun ActividadCard(
                         contentColor = Color(0xFF22303A)
                     )
                 ) {
-                    Text("Editar", fontSize = 12.sp)
+                    Text(
+                        text = "Editar",
+                        fontSize = 12.sp
+                    )
                 }
             }
         }

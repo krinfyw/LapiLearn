@@ -9,7 +9,9 @@ sealed class Screen(val route: String) {
 
     data object EditarActividad : Screen(route = "edictar_actividad")
 
-    data object Progresion : Screen(route = "progresion")
+    data object NuevaActividad : Screen(route = "nueva_actividad")
+
+    data object ResumenDocenteScreen : Screen(route = "resumen_docente")
     data object EstudianteIngresoCodigo: Screen(route = "ingreso_codigo")
     data object EstudiantePregunta: Screen(route="estudiante_pregunta")
 

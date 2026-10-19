@@ -19,7 +19,7 @@ import com.example.lapilearn.viewModels.AsistenteViewModel
 import com.example.lapilearn.viewModels.EstudianteViewModel
 import com.example.lapilearn.ui.screens.docente.EditarActividadScreen
 import com.example.lapilearn.viewModels.ActividadViewModel
-import com.example.lapilearn.ui.screens.docente.ProgresionScreen
+import com.example.lapilearn.ui.screens.docente.NuevaActividadScreen
 
 @Composable
 fun AppNavigation() {
@@ -59,8 +59,8 @@ fun AppNavigation() {
         composable(Screen.EditarActividad.route) {
             EditarActividadScreen(navController, actividadViewModel)
         }
-        composable(Screen.Progresion.route) {
-            ProgresionScreen(navController = navController, viewModel = actividadViewModel)
+        composable(Screen.NuevaActividad.route) {
+            NuevaActividadScreen(navController = navController, viewModel = actividadViewModel)
         }
     }
 }

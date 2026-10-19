@@ -37,4 +37,16 @@ class ActividadViewModel : ViewModel() {
             lista.map { if (it.id == actividad.id) actividad else it }
         }
     }
+
+    fun agregar(
+        actividad: Actividad
+    ) {
+        _actividades.update { lista ->
+            lista + actividad
+        }
+    }
+
+    fun nuevoId(): Int {
+        return (_actividades.value.maxOfOrNull { it.id } ?: 0) + 1
+    }
 }

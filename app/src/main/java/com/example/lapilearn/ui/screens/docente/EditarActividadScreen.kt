@@ -1,3 +1,4 @@
+
 package com.example.lapilearn.ui.screens.docente
 
 import androidx.compose.foundation.BorderStroke
@@ -14,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.ActividadViewModel
@@ -32,11 +32,14 @@ fun EditarActividadScreen(
     var objetivo by remember { mutableStateOf(actividad.objetivo) }
     var intentos by remember { mutableStateOf(actividad.intentos) }
     var estado by remember { mutableStateOf(actividad.estado) }
-    var mostrarCursos by remember { mutableStateOf(false) }
+
     var mostrarModulos by remember { mutableStateOf(false) }
+    var mostrarCursos by remember { mutableStateOf(false) }
+    var mostrarDificultades by remember { mutableStateOf(false) }
 
     val tealColor = Color(0xFF2C6E7F)
     val inkText = Color(0xFF22303A)
+    val lineColor = Color(0xFFE5D8C7)
 
     Column(
         modifier = Modifier
@@ -45,31 +48,24 @@ fun EditarActividadScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Cabecera("Editar actividad")
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // SELECCIONAR MÓDULO
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(
-                onClick = {
-                    mostrarModulos = !mostrarModulos
-                },
+                onClick = { mostrarModulos = !mostrarModulos },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.White,
                     contentColor = Color.Gray
                 ),
-                border = BorderStroke(
-                    1.dp,
-                    Color(0xFFE5D8C7)
-                )
+                border = BorderStroke(1.dp, lineColor)
             ) {
                 Text(
                     text = "Módulo: $modulo",
@@ -89,10 +85,7 @@ fun EditarActividadScreen(
                             containerColor = Color.White,
                             contentColor = Color.Gray
                         ),
-                        border = BorderStroke(
-                            1.dp,
-                            Color(0xFFE5D8C7)
-                        )
+                        border = BorderStroke(1.dp, lineColor)
                     ) {
                         Text(opcion)
                     }
@@ -100,25 +93,20 @@ fun EditarActividadScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
         // SELECCIONAR CURSO
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(
-                onClick = {
-                    mostrarCursos = !mostrarCursos
-                },
+                onClick = { mostrarCursos = !mostrarCursos },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.White,
                     contentColor = Color.Gray
                 ),
-                border = BorderStroke(
-                    1.dp,
-                    Color(0xFFE5D8C7)
-                )
+                border = BorderStroke(1.dp, lineColor)
             ) {
                 Text(
                     text = "Curso recomendado: $curso",
@@ -127,7 +115,6 @@ fun EditarActividadScreen(
             }
 
             if (mostrarCursos) {
-
                 for (opcion in listOf(
                     "1° básico",
                     "2° básico",
@@ -144,36 +131,59 @@ fun EditarActividadScreen(
                             containerColor = Color.White,
                             contentColor = Color.Gray
                         ),
-                        border = BorderStroke(
-                            1.dp,
-                            Color(0xFFE5D8C7)
-                        )
+                        border = BorderStroke(1.dp, lineColor)
                     ) {
                         Text(opcion)
                     }
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         // SELECCIONAR DIFICULTAD
 
-        OutlinedButton(
-            onClick = {
-                viewModel.dificultadSeleccionada = dificultad
-                navController.navigate(Screen.Progresion.route)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text(
-                text = "Dificultad: ${
-                    viewModel.dificultadSeleccionada.ifEmpty {
-                        dificultad
+        Column(modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = {
+                    mostrarDificultades = !mostrarDificultades
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Gray
+                ),
+                border = BorderStroke(1.dp, lineColor)
+            ) {
+                Text(
+                    text = "Dificultad: $dificultad",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            if (mostrarDificultades) {
+                for (opcion in listOf(
+                    "Fácil",
+                    "Media",
+                    "Avanzada"
+                )) {
+                    OutlinedButton(
+                        onClick = {
+                            dificultad = opcion
+                            mostrarDificultades = false
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Gray
+                        ),
+                        border = BorderStroke(1.dp, lineColor)
+                    ) {
+                        Text(opcion)
                     }
-                }",
-                color = Color.Gray
-            )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -213,17 +223,13 @@ fun EditarActividadScreen(
                 val seleccionado = estado == opcion
 
                 Button(
-                    onClick = {
-                        estado = opcion
-                    },
+                    onClick = { estado = opcion },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor =
-                            if (seleccionado) tealColor
-                            else Color.White,
+                            if (seleccionado) tealColor else Color.White,
                         contentColor =
-                            if (seleccionado) Color.White
-                            else inkText
+                            if (seleccionado) Color.White else inkText
                     )
                 ) {
                     Text(
@@ -234,24 +240,24 @@ fun EditarActividadScreen(
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         // GUARDAR CAMBIOS
+
         Button(
             onClick = {
                 viewModel.actualizar(
                     actividad.copy(
                         modulo = modulo,
                         curso = curso,
-                        dificultad =
-                            viewModel.dificultadSeleccionada.ifEmpty {
-                                dificultad
-                            },
+                        dificultad = dificultad,
                         objetivo = objetivo,
                         intentos = intentos,
                         estado = estado
                     )
                 )
+
                 navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth(),
