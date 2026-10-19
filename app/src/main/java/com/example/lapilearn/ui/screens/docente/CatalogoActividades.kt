@@ -2,6 +2,7 @@ package com.example.lapilearn.ui.screens.docente
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,11 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.lapilearn.navigation.Screen
+import com.example.lapilearn.viewModels.ActividadViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogoActividades(navController: NavController) {
+fun CatalogoActividades(navController: NavController, viewModel: ActividadViewModel) {
     val creamBg = Color(0xFFFBF8F2)
     val inkText = Color(0xFF22303A)
     val tealColor = Color(0xFF2C6E7F)
@@ -24,6 +28,8 @@ fun CatalogoActividades(navController: NavController) {
     val okColor = Color(0xFF4E9F6B)
     val okLight = Color(0xFFE5F5EB)
     val lineColor = Color(0xFFE1D9C8)
+
+    val actividades by viewModel.actividades.collectAsStateWithLifecycle()
 
     var cursoExpandido by remember { mutableStateOf(false) }
     var cursoSeleccionado by remember { mutableStateOf<String?>(null) }
@@ -110,38 +116,23 @@ fun CatalogoActividades(navController: NavController) {
                 }
             }
 
-            // Tarjetas
-            item {
+            // Tarjetas según los datos del ViewModel
+            items(actividades) { actividad ->
+                val disponible = actividad.estado == "Disponible"
                 ActividadCard(
-                    titulo = "El bosque encantado",
-                    descripcion = "Lectura · comprensión implícita · 2° básico",
-                    estado = "Disponible",
-                    estadoColor = okColor,
-                    estadoBg = okLight
+                    titulo = actividad.titulo,
+                    descripcion = "${actividad.modulo} · ${actividad.objetivo} · ${actividad.curso}",
+                    estado = actividad.estado,
+                    estadoColor = if (disponible) okColor else Color.Gray,
+                    estadoBg = if (disponible) okLight else Color(0xFFF3EFE4),
+                    onEditarClick = {
+                        viewModel.seleccionar(actividad.id)
+                        navController.navigate(Screen.EditarActividad.route)
+                    }
                 )
             }
 
-            item {
-                ActividadCard(
-                    titulo = "Sumas hasta 100",
-                    descripcion = "Matemática · operatoria · 2° básico",
-                    estado = "Borrador",
-                    estadoColor = Color.Gray,
-                    estadoBg = Color(0xFFF3EFE4)
-                )
-            }
-
-            item {
-                ActividadCard(
-                    titulo = "Vocabulario: animales",
-                    descripcion = "Lectura · vocabulario · 1° básico",
-                    estado = "Disponible",
-                    estadoColor = okColor,
-                    estadoBg = okLight
-                )
-            }
-
-            // Botón de nueva actividad (antes en bottomBar)
+            // Botón de nueva actividad
             item {
                 Button(
                     onClick = {},
@@ -161,7 +152,8 @@ fun ActividadCard(
     descripcion: String,
     estado: String,
     estadoColor: Color,
-    estadoBg: Color
+    estadoBg: Color,
+    onEditarClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -197,7 +189,7 @@ fun ActividadCard(
                 }
 
                 Button(
-                    onClick = {},
+                    onClick = onEditarClick,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color(0xFF22303A)

@@ -11,11 +11,15 @@ import com.example.lapilearn.ui.screens.inicio.LoginAsistenteScreen
 import com.example.lapilearn.ui.screens.docente.ResumenDocenteScreen
 import com.example.lapilearn.ui.screens.asistente.ResumenAsistenteScreen
 import com.example.lapilearn.ui.screens.docente.CatalogoActividades
+import com.example.lapilearn.ui.screens.docente.EditarActividadScreen
 import com.example.lapilearn.ui.screens.estudiante.EstudiantePregunta
 import com.example.lapilearn.ui.screens.estudiante.IngresoCodigoScreen
 import com.example.lapilearn.viewModels.DocenteViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
 import com.example.lapilearn.viewModels.EstudianteViewModel
+import com.example.lapilearn.ui.screens.docente.EditarActividadScreen
+import com.example.lapilearn.viewModels.ActividadViewModel
+import com.example.lapilearn.ui.screens.docente.ProgresionScreen
 
 @Composable
 fun AppNavigation() {
@@ -23,8 +27,11 @@ fun AppNavigation() {
     val docenteViewModel: DocenteViewModel = viewModel()
     val asistenteViewModel: AsistenteViewModel = viewModel()
     val estudianteViewModel: EstudianteViewModel = viewModel()
+    val actividadViewModel: ActividadViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(
+        navController = navController, startDestination = Screen.Home.route
+    ) {
         composable(Screen.Home.route) {
             HomeScreen(navController = navController)
         }
@@ -33,9 +40,6 @@ fun AppNavigation() {
         }
         composable(Screen.AsistenteLogin.route) {
             LoginAsistenteScreen(navController = navController, viewModel = asistenteViewModel)
-        }
-        composable(Screen.DocenteDashboard.route) {
-            CatalogoActividades(navController)
         }
         composable("resumen_docente") {
             ResumenDocenteScreen(viewModel = docenteViewModel)
@@ -48,6 +52,15 @@ fun AppNavigation() {
         }
         composable ("estudiante_pregunta"){
             EstudiantePregunta()
+        }
+        composable(Screen.DocenteDashboard.route) {
+            CatalogoActividades(navController, actividadViewModel)
+        }
+        composable(Screen.EditarActividad.route) {
+            EditarActividadScreen(navController, actividadViewModel)
+        }
+        composable(Screen.Progresion.route) {
+            ProgresionScreen(navController = navController, viewModel = actividadViewModel)
         }
     }
 }
