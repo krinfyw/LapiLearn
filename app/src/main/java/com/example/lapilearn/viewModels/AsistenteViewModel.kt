@@ -73,6 +73,7 @@ class AsistenteViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             val asistente = asistenteDao.login(estado.correo, estado.contrasena)
             if (asistente != null) {
+                _uiState.update { it.copy(nombre = asistente.nombre) }
                 onExito()
             } else {
                 _uiState.update {
@@ -80,5 +81,10 @@ class AsistenteViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             }
         }
+    }
+
+    /** Limpia correo, contraseña y nombre al cerrar sesión. */
+    fun cerrarSesion() {
+        _uiState.value = AsistenteUiState()
     }
 }

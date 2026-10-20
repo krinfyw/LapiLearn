@@ -11,6 +11,9 @@ interface EstudianteDao {
     @Query("SELECT * FROM intentos WHERE actividadId = :actividadId ORDER BY numero DESC LIMIT 1")
     suspend fun ultimoIntento(actividadId: Int): IntentoEntity?
 
+    @Query("SELECT * FROM intentos WHERE asignacionId = :asignacionId ORDER BY numero DESC LIMIT 1")
+    suspend fun ultimoIntentoDeAsignacion(asignacionId: Long): IntentoEntity?
+
     @Query("SELECT * FROM intentos WHERE id = :id")
     suspend fun intento(id: Long): IntentoEntity?
 

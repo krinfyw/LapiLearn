@@ -15,11 +15,14 @@ import com.example.lapilearn.data.local.entity.IntentoEntity
 import com.example.lapilearn.data.local.entity.RespuestaEntity
 import com.example.lapilearn.data.local.dao.ActividadDao
 import com.example.lapilearn.data.local.dao.EstudianteDao
+import com.example.lapilearn.data.local.dao.AsignacionDao
+import com.example.lapilearn.data.local.entity.AsignacionEntity
 
 @Database(
     entities = [DocenteEntity::class, AsistenteEntity::class, ActividadEntity::class,
-        PreguntaEntity::class, IntentoEntity::class, RespuestaEntity::class],
-    version = 2,
+        PreguntaEntity::class, IntentoEntity::class, RespuestaEntity::class,
+        AsignacionEntity::class],
+    version = 3,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -27,6 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun estudianteDao(): EstudianteDao
     abstract fun docenteDao(): DocenteDao
     abstract fun asistenteDao(): AsistenteDao
+    abstract fun asignacionDao(): AsignacionDao
 
     companion object {
         @Volatile
@@ -40,7 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "lapilearn_database"
                 )
-                    .addMigrations(EstudianteSchema.MIGRATION_1_2)
+                    .addMigrations(EstudianteSchema.MIGRATION_1_2, AsignacionSchema.MIGRATION_2_3)
                     .addCallback(object : RoomDatabase.Callback() {
                         // Datos de prueba: solo se ejecuta al crear la BD por primera vez
                         override fun onCreate(db: SupportSQLiteDatabase) {
@@ -48,6 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
                             db.execSQL("INSERT INTO docentes (correo, contrasena, nombre) VALUES ('docente@duoc.cl', '123456', 'Docente Prueba')")
                             db.execSQL("INSERT INTO asistentes (correo, contrasena, nombre) VALUES ('asistente@duoc.cl', '123456', 'Asistente Prueba')")
                             EstudianteSchema.sembrar(db)
+                            AsignacionSchema.sembrar(db)
                         }
                     })
                     .build()
