@@ -102,11 +102,14 @@ class EstudianteViewModel(
     internal suspend fun buscarSesion(codigo: String): SesionEstudiante = db.withTransaction {
         val normalizado = codigo.trim().uppercase(Locale.ROOT)
         require(normalizado.isNotBlank()) { "Ingresa el código de tu actividad." }
-        val actividad = requireNotNull(db.actividadDao().porCodigo(normalizado)) { "No encontramos ese código. Revísalo con tu asistente." }
+        // El código es temporal y pertenece a una asignación hecha por la asistente.
+        val asignacion = requireNotNull(db.asignacionDao().porCodigo(normalizado)) { "No encontramos ese código. Revísalo con tu asistente." }
+        val actividad = requireNotNull(db.actividadDao().porId(asignacion.actividadId)) { "La actividad asignada ya no existe." }
         validarActividad(actividad)
-        val ultimo = dao.ultimoIntento(actividad.id)
+        val ultimo = dao.ultimoIntentoDeAsignacion(asignacion.id)
         val id = ultimo?.id ?: dao.insertarIntento(IntentoEntity(
-            actividadId = actividad.id, numero = 1, iniciadoEn = System.currentTimeMillis()))
+            actividadId = actividad.id, asignacionId = asignacion.id, numero = 1,
+            iniciadoEn = System.currentTimeMillis()))
         cargar(id)
     }
 
@@ -139,10 +142,15 @@ class EstudianteViewModel(
         val anterior = cargar(intentoId)
         validarActividad(anterior.actividad)
         require(anterior.finalizada) { "Primero termina el intento actual." }
-        val ultimo = requireNotNull(dao.ultimoIntento(anterior.actividad.id))
+        val asignacionId = anterior.intento.asignacionId
+        val ultimo = requireNotNull(
+            if (asignacionId != null) dao.ultimoIntentoDeAsignacion(asignacionId)
+            else dao.ultimoIntento(anterior.actividad.id)
+        )
         if (ultimo.id != intentoId) return@withTransaction cargar(ultimo.id)
         require(ultimo.numero < anterior.actividad.intentosPermitidos) { "Ya utilizaste los intentos permitidos. Consulta a tu asistente." }
         val id = dao.insertarIntento(IntentoEntity(actividadId = anterior.actividad.id,
+            asignacionId = asignacionId,
             numero = ultimo.numero + 1, iniciadoEn = System.currentTimeMillis()))
         cargar(id)
     }
