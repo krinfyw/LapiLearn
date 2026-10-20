@@ -17,7 +17,6 @@ import com.example.lapilearn.ui.screens.estudiante.IngresoCodigoScreen
 import com.example.lapilearn.viewModels.DocenteViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
 import com.example.lapilearn.viewModels.EstudianteViewModel
-import com.example.lapilearn.ui.screens.docente.EditarActividadScreen
 import com.example.lapilearn.viewModels.ActividadViewModel
 import com.example.lapilearn.ui.screens.docente.NuevaActividadScreen
 
@@ -50,8 +49,11 @@ fun AppNavigation() {
         composable (Screen.EstudianteIngresoCodigo.route){
             IngresoCodigoScreen(navController= navController, viewModel = estudianteViewModel)
         }
-        composable ("estudiante_pregunta"){
-            EstudiantePregunta()
+        composable (Screen.EstudiantePregunta.route){
+            EstudiantePregunta(viewModel = estudianteViewModel, onSalir = {
+                estudianteViewModel.salir()
+                navController.popBackStack(Screen.EstudianteIngresoCodigo.route, false)
+            })
         }
         composable(Screen.DocenteDashboard.route) {
             CatalogoActividades(navController, actividadViewModel)
