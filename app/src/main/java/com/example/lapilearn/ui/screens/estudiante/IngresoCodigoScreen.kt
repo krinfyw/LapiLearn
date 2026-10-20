@@ -35,7 +35,9 @@ fun IngresoCodigoScreen(
         estado = estado,
         onCodigoChange = viewModel::onCodigoChange,
         onIngresarClick = {
-            navController.navigate(Screen.EstudiantePregunta.route)
+            viewModel.ingresar {
+                navController.navigate(Screen.EstudiantePregunta.route) { launchSingleTop = true }
+            }
         }
     )
 }
@@ -60,7 +62,7 @@ fun FormularioCodigo(
         Spacer(modifier.height(16.dp))
 
         Text(
-            text = "Ingesa el código que te dio tu profesora o asistente",
+            text = "Ingresa el código de tu actividad de práctica.",
             fontSize = 16.sp,
             color = Color.Gray,
         )
@@ -76,14 +78,16 @@ fun FormularioCodigo(
 
         Button(
             onClick = onIngresarClick,
+            enabled = !estado.cargando,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF2C6E7F),
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Ingresar")
+            Text(if (estado.cargando) "Buscando actividad…" else "Ingresar")
         }
+        Text("Práctica local · Usa el mismo dispositivo", fontSize = 12.sp, color = Color.Gray)
     }
 }
 
