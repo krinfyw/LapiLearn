@@ -137,14 +137,31 @@ fun AgregarPreguntaScreen(
                     correcta = correcta,
                     textoApoyo = textoApoyo,
                     retroalimentacion = retroalimentacion
-                )
+                ) {
+                    enunciado = ""
+                    opcionA = ""
+                    opcionB = ""
+                    opcionC = ""
+                    opcionD = ""
+                    correcta = 0
+                    textoApoyo = ""
+                    retroalimentacion = ""
+                    mostrarMensaje = true
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = tealColor
-            )
+            ),
+            enabled = !viewModel.guardandoPregunta
         ) {
-            Text("Guardar pregunta")
+            Text(if (viewModel.guardandoPregunta) "Guardando..." else "Guardar pregunta")
+        }
+        if (mostrarMensaje) {
+            Text(
+                text = "Pregunta guardada correctamente.",
+                color = tealColor
+            )
         }
         viewModel.errorGuardado?.let { error ->
             Text(
@@ -155,6 +172,7 @@ fun AgregarPreguntaScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedButton(
+            enabled = !viewModel.guardandoPregunta,
             onClick = {
                 navController.popBackStack()
             },

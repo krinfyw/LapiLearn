@@ -245,7 +245,12 @@ fun EditarActividadScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         // GUARDAR CAMBIOS
+        viewModel.errorGuardado?.let { error ->
+            Text(text = error, color = Color.Red)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         Button(
+            enabled = !viewModel.guardandoActividad,
             onClick = {
                 navController.navigate(Screen.AgregarPregunta.route)
             },
@@ -257,6 +262,7 @@ fun EditarActividadScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
+            enabled = !viewModel.guardandoActividad,
             onClick = {
                 viewModel.actualizar(
                     actividad.copy(
@@ -267,8 +273,9 @@ fun EditarActividadScreen(
                         intentos = intentos,
                         estado = estado
                     )
-                )
-                navController.popBackStack()
+                ) {
+                    navController.popBackStack()
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -276,13 +283,14 @@ fun EditarActividadScreen(
             )
         ) {
             Text(
-                text = "Guardar cambios",
+                text = if (viewModel.guardandoActividad) "Guardando..." else "Guardar cambios",
                 fontWeight = FontWeight.Bold
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedButton(
+            enabled = !viewModel.guardandoActividad,
             onClick = {
                 navController.popBackStack()
             },

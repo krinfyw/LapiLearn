@@ -30,6 +30,10 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         )
     var errorGuardado by mutableStateOf<String?>(null)
         private set
+    var guardandoActividad by mutableStateOf(false)
+        private set
+    var guardandoPregunta by mutableStateOf(false)
+        private set
     private var idSeleccionada: Int? = null
     private var actividadNueva: Actividad? = null
 
@@ -50,14 +54,12 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         return null
     }
 
-    // BUSCAR ACTIVIDAD EN ROOM
     suspend fun obtenerActividadPorId(): Actividad? {
         val id = idSeleccionada ?: return null
         return dao.porId(id)?.toModel()
     }
 
-    // ACTUALIZAR ACTIVIDAD
-    fun actualizar(actividad: Actividad) = guardar {
+    fun actualizar(actividad: Actividad, onGuardada: () -> Unit) = guardar(onGuardada) {
         actualizarEnRoom(actividad)
     }
 
@@ -91,21 +93,25 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     // GUARDAR CAMBIOS
-    private fun guardar(operacion: suspend () -> Unit) {
+    private fun guardar(onGuardada: () -> Unit, operacion: suspend () -> Unit) {
+        if (guardandoActividad) return
+        guardandoActividad = true
+        errorGuardado = null
         viewModelScope.launch {
-            errorGuardado = null
             try {
                 operacion()
+                onGuardada()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 errorGuardado = e.message
                     ?: "No se pudo guardar la actividad."
+            } finally {
+                guardandoActividad = false
             }
         }
     }
 
-    // VALIDAR INTENTOS
     private fun intentos(valor: String): Int {
         return valor.toIntOrNull()?.takeIf {
             it > 0
@@ -139,17 +145,21 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
-    // ACTUALIZAR ACTIVIDAD EN ROOM
     private suspend fun actualizarEnRoom(
         actividad: Actividad
     ) = db.withTransaction {
-    require(actividad.objetivo.isNotBlank()) {
+        require(actividad.objetivo.isNotBlank()) {
             "El objetivo es obligatorio."
         }
         val original = requireNotNull(
             dao.porId(actividad.id)
         ) {
             "La actividad ya no existe."
+        }
+        if (actividad.estado == "Disponible") {
+            require(daoPreguntas.preguntas(actividad.id).isNotEmpty()) {
+                "Agrega al menos una pregunta antes de dejar la actividad disponible."
+            }
         }
         dao.actualizar(
             original.copy(
@@ -164,7 +174,6 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         )
     }
 
-    // AGREGAR PREGUNTA
     fun agregarPregunta(
         enunciado: String,
         opcionA: String,
@@ -173,10 +182,13 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         opcionD: String,
         correcta: Int,
         textoApoyo: String,
-        retroalimentacion: String
+        retroalimentacion: String,
+        onGuardada: () -> Unit
     ) {
+        if (guardandoPregunta) return
+        guardandoPregunta = true
+        errorGuardado = null
         viewModelScope.launch {
-            errorGuardado = null
             try {
                 val actividad = obtenerActividadPorId()
                     ?: throw IllegalArgumentException(
@@ -216,11 +228,14 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                         )
                     )
                 }
+                onGuardada()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 errorGuardado = e.message
                     ?: "No se pudo guardar la pregunta."
+            } finally {
+                guardandoPregunta = false
             }
         }
     }
