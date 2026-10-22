@@ -22,7 +22,6 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     val actividades = dao.observarTodas()
         .map { lista -> lista.map { it.toModel() } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-    var dificultadSeleccionada by mutableStateOf("")
     var errorGuardado by mutableStateOf<String?>(null)
         private set
     private var idSeleccionada: Int? = null

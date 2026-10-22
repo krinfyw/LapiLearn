@@ -43,7 +43,6 @@ ksp {
 dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.8")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)

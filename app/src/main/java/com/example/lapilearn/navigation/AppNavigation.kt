@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.lapilearn.ui.screens.inicio.HomeScreen
 import com.example.lapilearn.ui.screens.inicio.LoginDocenteScreen
 import com.example.lapilearn.ui.screens.inicio.LoginAsistenteScreen
-import com.example.lapilearn.ui.screens.docente.ResumenDocenteScreen
 import com.example.lapilearn.ui.screens.asistente.AsistentePanelScreen
 import com.example.lapilearn.ui.screens.asistente.AsistenteResultadosScreen
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
@@ -42,9 +41,6 @@ fun AppNavigation() {
         }
         composable(Screen.AsistenteLogin.route) {
             LoginAsistenteScreen(navController = navController, viewModel = asistenteViewModel)
-        }
-        composable("resumen_docente") {
-            ResumenDocenteScreen(viewModel = docenteViewModel)
         }
         composable(Screen.AsistentePanel.route) {
             AsistentePanelScreen(
