@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.ActividadViewModel
@@ -244,6 +245,16 @@ fun EditarActividadScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         // GUARDAR CAMBIOS
+        Button(
+            onClick = {
+                navController.navigate(Screen.AgregarPregunta.route)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("+ Agregar pregunta")
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = {
@@ -257,7 +268,6 @@ fun EditarActividadScreen(
                         estado = estado
                     )
                 )
-
                 navController.popBackStack()
             },
             modifier = Modifier.fillMaxWidth(),
@@ -269,6 +279,16 @@ fun EditarActividadScreen(
                 text = "Guardar cambios",
                 fontWeight = FontWeight.Bold
             )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedButton(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Volver al catálogo")
         }
     }
 }

@@ -22,4 +22,6 @@ sealed class Screen(val route: String) {
             return route.replace(oldValue = "{itemId}", newValue = itemId)
         }
     }
+
+    data object AgregarPregunta : Screen(route = "agregar_pregunta")
 }
