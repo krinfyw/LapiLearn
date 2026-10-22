@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.navigation.Screen
+import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.viewModels.ActividadViewModel
 
 @Composable
@@ -65,19 +66,10 @@ fun CatalogoActividades(
                     .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Perfil: Docente / UTP",
-                    fontSize = 12.sp,
-                    color = Color.Gray
+                Cabecera(
+                    texto = "Catálogo de actividades",
+                    subtitulo = "Perfil: Docente / UTP"
                 )
-                Text(
-                    text = "Catálogo de actividades",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = inkText
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(color = lineColor)
             }
         }
     ) { paddingValues ->

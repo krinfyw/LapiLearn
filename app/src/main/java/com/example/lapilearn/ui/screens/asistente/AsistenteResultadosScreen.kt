@@ -3,8 +3,6 @@ package com.example.lapilearn.ui.screens.asistente
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.EstadoAsignacion
 import com.example.lapilearn.model.ResumenAsignacion
+import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.utils.AsignacionReglas
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import java.text.SimpleDateFormat
@@ -34,8 +33,6 @@ private val CoralLight = Color(0xFFFCEADF)
 private val OkColor = Color(0xFF4E9F6B)
 private val OkLight = Color(0xFFE5F5EB)
 private val GrayLight = Color(0xFFF3EFE4)
-private val LineColor = Color(0xFFE1D9C8)
-
 /** Resultados básicos por asignación: estado, intentos, aciertos, errores y observación. */
 @Composable
 fun AsistenteResultadosScreen(
@@ -50,32 +47,14 @@ fun AsistenteResultadosScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = "Perfil: Asistente de aula",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
-                        Text(
-                            text = "Resultados de práctica",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = InkText
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                HorizontalDivider(color = LineColor, modifier = Modifier.padding(horizontal = 8.dp))
+                Cabecera(
+                    texto = "Resultados de práctica",
+                    subtitulo = "Perfil: Asistente de aula",
+                    onVolver = { navController.popBackStack() }
+                )
             }
         }
     ) { paddingValues ->

@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import com.example.lapilearn.data.local.entity.ActividadEntity
 import com.example.lapilearn.model.AsistentePanelUiState
 import com.example.lapilearn.navigation.Screen
+import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
@@ -56,26 +57,11 @@ fun AsistentePanelScreen(
                     .padding(16.dp)
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Perfil: Asistente de aula",
-                            fontSize = 12.sp,
-                            color = Color.Gray
-                        )
-                        Text(
-                            text = "Asignar actividades",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = InkText
-                        )
-                    }
-                    TextButton(onClick = onCerrarSesion) {
-                        Text("Cerrar sesión", color = Teal)
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                HorizontalDivider(color = LineColor)
+                Cabecera(
+                    texto = "Asignar actividades",
+                    subtitulo = "Perfil: Asistente de aula",
+                    onCerrarSesion = onCerrarSesion
+                )
             }
         },
         bottomBar = {
