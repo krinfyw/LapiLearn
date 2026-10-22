@@ -28,4 +28,10 @@ interface EstudianteDao {
 
     @Query("UPDATE intentos SET finalizadoEn = :fecha WHERE id = :id AND finalizadoEn IS NULL")
     suspend fun finalizar(id: Long, fecha: Long)
+
+    @Insert
+    suspend fun insertarPregunta(pregunta: PreguntaEntity)
+
+    @Query("SELECT COALESCE(MAX(orden), 0) FROM preguntas WHERE actividadId = :actividadId")
+    suspend fun ultimoOrdenPregunta(actividadId: Int): Int
 }

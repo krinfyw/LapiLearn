@@ -20,6 +20,7 @@ import com.example.lapilearn.viewModels.AsistenteViewModel
 import com.example.lapilearn.viewModels.EstudianteViewModel
 import com.example.lapilearn.viewModels.ActividadViewModel
 import com.example.lapilearn.ui.screens.docente.NuevaActividadScreen
+import com.example.lapilearn.ui.screens.docente.AgregarPreguntaScreen
 
 @Composable
 fun AppNavigation() {
@@ -41,6 +42,9 @@ fun AppNavigation() {
         }
         composable(Screen.AsistenteLogin.route) {
             LoginAsistenteScreen(navController = navController, viewModel = asistenteViewModel)
+        }
+        composable(Screen.AgregarPregunta.route) {
+            AgregarPreguntaScreen(navController = navController, viewModel = actividadViewModel)
         }
         composable(Screen.AsistentePanel.route) {
             AsistentePanelScreen(
