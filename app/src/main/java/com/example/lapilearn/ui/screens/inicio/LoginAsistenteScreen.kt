@@ -20,6 +20,7 @@ import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.ui.theme.coralColor
 import com.example.lapilearn.ui.theme.creamBg
 import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.viewModels.AsistenteViewModel
 
 // 1. Composable Contenedor (Stateful): Maneja el ViewModel, la navegación y el estado del ciclo de vida.
@@ -106,7 +107,7 @@ fun FormularioLoginAsistente(
         Button(
             onClick = onIngresarClick,
             colors = ButtonDefaults.buttonColors(
-                containerColor = coralColor,
+                containerColor = tealColor,
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth()
