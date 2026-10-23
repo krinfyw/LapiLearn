@@ -21,6 +21,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     private val db = AppDatabase.getInstance(application)
     private val dao = db.actividadDao()
     private val daoPreguntas = db.estudianteDao()
+
     val actividades = dao.observarTodas()
         .map { lista -> lista.map { it.toModel() } }
         .stateIn(
@@ -140,7 +141,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                 codigo = UUID.randomUUID().toString()
                     .replace("-", "")
                     .uppercase(),
-                instrucciones = "Lee y confirma cada respuesta."
+                instrucciones = actividad.instrucciones
             )
         )
     }
@@ -169,6 +170,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                 dificultad = actividad.dificultad,
                 objetivo = actividad.objetivo.trim(),
                 intentosPermitidos = intentos(actividad.intentos),
+                instrucciones = actividad.instrucciones,
                 estado = actividad.estado
             )
         )

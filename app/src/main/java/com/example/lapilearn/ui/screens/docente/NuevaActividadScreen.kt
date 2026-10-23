@@ -35,6 +35,7 @@ fun NuevaActividadScreen(
     var curso by remember { mutableStateOf("1° básico") }
     var dificultad by remember { mutableStateOf("Fácil") }
     var objetivo by remember { mutableStateOf("") }
+    var instrucciones by remember { mutableStateOf("") }
     var intentos by remember { mutableStateOf("") }
     var estado by remember { mutableStateOf("Borrador") }
     var actividadGuardada by remember { mutableStateOf(false) }
@@ -225,6 +226,14 @@ fun NuevaActividadScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+
+        CampoTexto(
+            valor = instrucciones,
+            etiqueta = "Instrucciones",
+            onChange = { instrucciones = it }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
         // INTENTOS
 
         CampoTexto(
@@ -300,9 +309,9 @@ fun NuevaActividadScreen(
                         dificultad = dificultad,
                         objetivo = objetivo,
                         intentos = intentos,
-                        estado = estado
+                        estado = estado,
+                        instrucciones = instrucciones
                     )
-
                     viewModel.agregar(nuevaActividad) {
                         actividadGuardada = true
                         mensaje = "Actividad guardada correctamente."
@@ -339,17 +348,6 @@ fun NuevaActividadScreen(
                 text = viewModel.errorGuardado ?: "",
                 color = Color.Red
             )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(Screen.AgregarPregunta.route)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = actividadGuardada
-        ) {
-            Text("+ Agregar pregunta")
         }
         Spacer(modifier = Modifier.height(12.dp))
 
