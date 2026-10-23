@@ -1,6 +1,8 @@
 package com.example.lapilearn.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +32,24 @@ fun AppNavigation() {
     val estudianteViewModel: EstudianteViewModel = viewModel()
     val actividadViewModel: ActividadViewModel = viewModel()
     val asistentePanelViewModel: AsistentePanelViewModel = viewModel()
+    val docente by docenteViewModel.uiState.collectAsStateWithLifecycle()
+    val asistente by asistenteViewModel.uiState.collectAsStateWithLifecycle()
+    val claveDocente = docente.usuarioId?.let { "docente_$it" }
+    val claveAsistente = asistente.usuarioId?.let { "asistente_$it" }
+
+    fun cerrarSesionDocente() {
+        docenteViewModel.cerrarSesion()
+        navController.navigate(Screen.Home.route) {
+            popUpTo(Screen.Home.route) { inclusive = true }
+        }
+    }
+
+    fun cerrarSesionAsistente() {
+        asistenteViewModel.cerrarSesion()
+        navController.navigate(Screen.Home.route) {
+            popUpTo(Screen.Home.route) { inclusive = true }
+        }
+    }
 
     NavHost(
         navController = navController, startDestination = Screen.Home.route
@@ -51,12 +71,8 @@ fun AppNavigation() {
                 navController = navController,
                 viewModel = asistentePanelViewModel,
                 asistenteViewModel = asistenteViewModel,
-                onCerrarSesion = {
-                    asistenteViewModel.cerrarSesion()
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
-                }
+                onCerrarSesion = ::cerrarSesionAsistente,
+                usuarioClave = claveAsistente
             )
         }
         composable(Screen.AsistenteResultados.route) {
@@ -75,7 +91,12 @@ fun AppNavigation() {
             })
         }
         composable(Screen.DocenteDashboard.route) {
-            CatalogoActividades(navController, actividadViewModel)
+            CatalogoActividades(
+                navController = navController,
+                viewModel = actividadViewModel,
+                usuarioClave = claveDocente,
+                onCerrarSesion = ::cerrarSesionDocente
+            )
         }
         composable(Screen.EditarActividad.route) {
             EditarActividadScreen(navController, actividadViewModel)
