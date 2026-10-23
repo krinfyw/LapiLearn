@@ -40,7 +40,8 @@ fun AsistentePanelScreen(
     navController: NavController,
     viewModel: AsistentePanelViewModel,
     asistenteViewModel: AsistenteViewModel,
-    onCerrarSesion: () -> Unit
+    onCerrarSesion: () -> Unit,
+    usuarioClave: String? = null
 ) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
     val sesion by asistenteViewModel.uiState.collectAsStateWithLifecycle()
@@ -58,6 +59,7 @@ fun AsistentePanelScreen(
                 Cabecera(
                     texto = "Asignar actividades",
                     subtitulo = "Perfil: Asistente de aula",
+                    usuarioClave = usuarioClave,
                     onCerrarSesion = onCerrarSesion
                 )
             }

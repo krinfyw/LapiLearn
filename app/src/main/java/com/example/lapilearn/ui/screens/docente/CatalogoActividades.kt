@@ -29,7 +29,9 @@ import com.example.lapilearn.viewModels.ActividadViewModel
 @Composable
 fun CatalogoActividades(
     navController: NavController,
-    viewModel: ActividadViewModel
+    viewModel: ActividadViewModel,
+    usuarioClave: String? = null,
+    onCerrarSesion: (() -> Unit)? = null
 ) {
     val actividades by viewModel.actividades.collectAsStateWithLifecycle()
 
@@ -66,7 +68,9 @@ fun CatalogoActividades(
                 Spacer(modifier = Modifier.height(16.dp))
                 Cabecera(
                     texto = "Catálogo de actividades",
-                    subtitulo = "Perfil: Docente / UTP"
+                    subtitulo = "Perfil: Docente / UTP",
+                    usuarioClave = usuarioClave,
+                    onCerrarSesion = onCerrarSesion
                 )
             }
         }
@@ -78,7 +82,6 @@ fun CatalogoActividades(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             // FILTROS DE MÓDULO
             item {
                 Column(

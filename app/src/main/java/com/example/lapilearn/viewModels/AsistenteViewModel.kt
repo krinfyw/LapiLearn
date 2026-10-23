@@ -67,13 +67,14 @@ class AsistenteViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun loginAsistente(onExito: () -> Unit) {
+        _uiState.update { it.copy(usuarioId = null) }
         if (!validarFormulario()) return
 
         val estado = _uiState.value
         viewModelScope.launch {
             val asistente = asistenteDao.login(estado.correo, estado.contrasena)
             if (asistente != null) {
-                _uiState.update { it.copy(nombre = asistente.nombre) }
+                _uiState.update { it.copy(nombre = asistente.nombre, usuarioId = asistente.id) }
                 onExito()
             } else {
                 _uiState.update {

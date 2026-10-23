@@ -12,8 +12,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +29,8 @@ fun Cabecera(
     subtitulo: String? = null,
     onVolver: (() -> Unit)? = null,
     onCerrarSesion: (() -> Unit)? = null,
-    colorContenido: Color = inkText
+    colorContenido: Color = inkText,
+    usuarioClave: String? = null
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -61,9 +62,13 @@ fun Cabecera(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            if (onCerrarSesion != null) {
-                TextButton(onClick = onCerrarSesion) {
-                    Text("Cerrar sesión", color = colorContenido)
+            if (usuarioClave != null && onCerrarSesion != null) {
+                key(usuarioClave) {
+                    AvatarUsuario(
+                        claveUsuario = usuarioClave,
+                        onCerrarSesion = onCerrarSesion,
+                        colorContenido = colorContenido
+                    )
                 }
             }
         }

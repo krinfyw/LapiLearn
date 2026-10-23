@@ -67,12 +67,14 @@ class DocenteViewModel(application: Application) : AndroidViewModel(application)
 
     // Valida el formulario y consulta la BD. Si las credenciales existen, llama onExito.
     fun loginDocente(onExito: () -> Unit) {
+        _uiState.update { it.copy(usuarioId = null) }
         if (!validarFormulario()) return
 
         val estado = _uiState.value
         viewModelScope.launch {
             val docente = docenteDao.login(estado.correo, estado.contrasena)
             if (docente != null) {
+                _uiState.update { it.copy(usuarioId = docente.id) }
                 onExito()
             } else {
                 _uiState.update {
@@ -80,5 +82,9 @@ class DocenteViewModel(application: Application) : AndroidViewModel(application)
                 }
             }
         }
+    }
+
+    fun cerrarSesion() {
+        _uiState.value = DocenteUiState()
     }
 }
