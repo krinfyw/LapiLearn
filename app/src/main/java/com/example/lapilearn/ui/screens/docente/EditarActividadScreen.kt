@@ -18,6 +18,9 @@ import androidx.navigation.NavController
 import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.lineColor
+import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.viewModels.ActividadViewModel
 
 @Composable
@@ -38,9 +41,7 @@ fun EditarActividadScreen(
     var mostrarCursos by remember { mutableStateOf(false) }
     var mostrarDificultades by remember { mutableStateOf(false) }
 
-    val tealColor = Color(0xFF2C6E7F)
-    val inkText = Color(0xFF22303A)
-    val lineColor = Color(0xFFE5D8C7)
+
 
     Column(
         modifier = Modifier

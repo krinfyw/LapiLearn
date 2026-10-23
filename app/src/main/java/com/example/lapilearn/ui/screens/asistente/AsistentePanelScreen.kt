@@ -22,19 +22,17 @@ import com.example.lapilearn.model.AsistentePanelUiState
 import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.ui.theme.coralColor
+import com.example.lapilearn.ui.theme.coralLight
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.lineColor
+import com.example.lapilearn.ui.theme.okColor
+import com.example.lapilearn.ui.theme.okLight
+import com.example.lapilearn.ui.theme.tealColor
+import com.example.lapilearn.ui.theme.tealLight
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import com.example.lapilearn.viewModels.AsistenteViewModel
-
-// Misma paleta que el catálogo del docente y las pantallas del estudiante.
-private val CreamBg = Color(0xFFFBF8F2)
-private val InkText = Color(0xFF22303A)
-private val Teal = Color(0xFF2C6E7F)
-private val TealLight = Color(0xFFE4F0F0)
-private val Coral = Color(0xFFE8804A)
-private val CoralLight = Color(0xFFFCEADF)
-private val OkColor = Color(0xFF4E9F6B)
-private val OkLight = Color(0xFFE5F5EB)
-private val LineColor = Color(0xFFE1D9C8)
 
 /** Panel de la asistente: elige módulo, curso y dificultad, y asigna actividades autorizadas. */
 @Composable
@@ -49,7 +47,7 @@ fun AsistentePanelScreen(
     val responsable = sesion.nombre.ifBlank { "Asistente de aula" }
 
     Scaffold(
-        containerColor = CreamBg,
+        containerColor = creamBg,
         topBar = {
             Column(
                 modifier = Modifier
@@ -75,7 +73,7 @@ fun AsistentePanelScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 52.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Teal)
+                    colors = ButtonDefaults.buttonColors(containerColor = tealColor)
                 ) {
                     Text(
                         text = "Ver resultados (${estado.asignaciones.size})",
@@ -159,8 +157,8 @@ private fun Filtros(
                 FiltroBoton(
                     texto = modulo,
                     seleccionado = estado.modulo == modulo,
-                    colorActivo = if (esLectura) Teal else Coral,
-                    colorSuave = if (esLectura) TealLight else CoralLight,
+                    colorActivo = if (esLectura) tealColor else coralColor,
+                    colorSuave = if (esLectura) tealLight else coralLight,
                     modifier = Modifier.weight(1f),
                     onClick = { onModulo(modulo) }
                 )
@@ -174,7 +172,7 @@ private fun Filtros(
                 FiltroBoton(
                     texto = curso.substringBefore(" "),
                     seleccionado = estado.curso == curso,
-                    colorActivo = Teal,
+                    colorActivo = tealColor,
                     colorSuave = Color.White,
                     modifier = Modifier.weight(1f),
                     onClick = { onCurso(curso) }
@@ -189,7 +187,7 @@ private fun Filtros(
                 FiltroBoton(
                     texto = dificultad,
                     seleccionado = estado.dificultad == dificultad,
-                    colorActivo = Teal,
+                    colorActivo = tealColor,
                     colorSuave = Color.White,
                     modifier = Modifier.weight(1f),
                     onClick = { onDificultad(dificultad) }
@@ -199,7 +197,7 @@ private fun Filtros(
 
         if (estado.hayFiltros) {
             TextButton(onClick = onLimpiar) {
-                Text("Quitar filtros", color = Teal)
+                Text("Quitar filtros", color = tealColor)
             }
         }
     }
@@ -218,7 +216,7 @@ private fun FiltroBoton(
         onClick = onClick,
         modifier = modifier.heightIn(min = 48.dp),
         contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
-        border = if (seleccionado) null else BorderStroke(1.dp, LineColor),
+        border = if (seleccionado) null else BorderStroke(1.dp, lineColor),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (seleccionado) colorActivo else colorSuave,
             contentColor = if (seleccionado) Color.White else colorActivo
@@ -244,7 +242,7 @@ private fun ActividadAsignableCard(
                 text = actividad.titulo,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = InkText
+                color = inkText
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
@@ -260,10 +258,10 @@ private fun ActividadAsignableCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(color = OkLight, shape = MaterialTheme.shapes.small) {
+                Surface(color = okLight, shape = MaterialTheme.shapes.small) {
                     Text(
                         text = actividad.estado,
-                        color = OkColor,
+                        color = okColor,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
@@ -283,7 +281,7 @@ private fun ActividadAsignableCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Teal)
+                colors = ButtonDefaults.buttonColors(containerColor = tealColor)
             ) {
                 Text("Asignar a un estudiante", fontWeight = FontWeight.Bold)
             }
@@ -326,7 +324,7 @@ private fun DialogoAsignar(
                 Button(
                     onClick = onConfirmar,
                     enabled = !guardando,
-                    colors = ButtonDefaults.buttonColors(containerColor = Teal)
+                    colors = ButtonDefaults.buttonColors(containerColor = tealColor)
                 ) {
                     Text(if (guardando) "Guardando…" else "Generar código")
                 }
@@ -350,13 +348,13 @@ private fun DialogoAsignar(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Surface(color = TealLight, shape = MaterialTheme.shapes.medium) {
+                    Surface(color = tealLight, shape = MaterialTheme.shapes.medium) {
                         Text(
                             text = codigoGenerado,
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace,
-                            color = Teal,
+                            color = tealColor,
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
                         )
                     }
@@ -372,7 +370,7 @@ private fun DialogoAsignar(
             confirmButton = {
                 Button(
                     onClick = onCerrar,
-                    colors = ButtonDefaults.buttonColors(containerColor = Teal)
+                    colors = ButtonDefaults.buttonColors(containerColor = tealColor)
                 ) { Text("Listo") }
             }
         )

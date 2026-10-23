@@ -2,7 +2,6 @@ package com.example.lapilearn.ui.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.lineColor
 
 @Composable
 fun Cabecera(
@@ -28,7 +29,7 @@ fun Cabecera(
     subtitulo: String? = null,
     onVolver: (() -> Unit)? = null,
     onCerrarSesion: (() -> Unit)? = null,
-    colorContenido: Color = Color(0xFF22303A)
+    colorContenido: Color = inkText
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -70,7 +71,7 @@ fun Cabecera(
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = lineColor
         )
     }
 }

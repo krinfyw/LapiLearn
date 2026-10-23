@@ -18,21 +18,22 @@ import androidx.navigation.NavController
 import com.example.lapilearn.model.EstadoAsignacion
 import com.example.lapilearn.model.ResumenAsignacion
 import com.example.lapilearn.ui.component.Cabecera
+import com.example.lapilearn.ui.theme.coralColor
+import com.example.lapilearn.ui.theme.coralLight
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.grayLight
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.okColor
+import com.example.lapilearn.ui.theme.okLight
+import com.example.lapilearn.ui.theme.tealColor
+import com.example.lapilearn.ui.theme.tealLight
 import com.example.lapilearn.utils.AsignacionReglas
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-private val CreamBg = Color(0xFFFBF8F2)
-private val InkText = Color(0xFF22303A)
-private val Teal = Color(0xFF2C6E7F)
-private val TealLight = Color(0xFFE4F0F0)
-private val Coral = Color(0xFFE8804A)
-private val CoralLight = Color(0xFFFCEADF)
-private val OkColor = Color(0xFF4E9F6B)
-private val OkLight = Color(0xFFE5F5EB)
-private val GrayLight = Color(0xFFF3EFE4)
+
 /** Resultados básicos por asignación: estado, intentos, aciertos, errores y observación. */
 @Composable
 fun AsistenteResultadosScreen(
@@ -42,7 +43,7 @@ fun AsistenteResultadosScreen(
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        containerColor = CreamBg,
+        containerColor = creamBg,
         topBar = {
             Column(
                 modifier = Modifier
@@ -120,11 +121,11 @@ private fun ResumenGeneral(asignaciones: List<ResumenAsignacion>) {
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text("Resumen", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = InkText)
+            Text("Resumen", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = inkText)
 
             EstadoAsignacion.entries.forEach { estado ->
                 val cantidad = asignaciones.count { it.estado == estado }
-                Text("${estado.etiqueta}: $cantidad", fontSize = 14.sp, color = InkText)
+                Text("${estado.etiqueta}: $cantidad", fontSize = 14.sp, color = inkText)
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -150,9 +151,9 @@ private fun AsignacionCard(
     val asignacion = resumen.asignacion
     val actividad = resumen.actividad
     val (colorEstado, fondoEstado) = when (resumen.estado) {
-        EstadoAsignacion.PENDIENTE -> Color.Gray to GrayLight
-        EstadoAsignacion.EN_DESARROLLO -> Coral to CoralLight
-        EstadoAsignacion.FINALIZADA -> OkColor to OkLight
+        EstadoAsignacion.PENDIENTE -> Color.Gray to grayLight
+        EstadoAsignacion.EN_DESARROLLO -> coralColor to coralLight
+        EstadoAsignacion.FINALIZADA -> okColor to okLight
     }
 
     Surface(
@@ -171,7 +172,7 @@ private fun AsignacionCard(
                     text = asignacion.aliasEstudiante,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = InkText
+                    color = inkText
                 )
                 Surface(color = fondoEstado, shape = MaterialTheme.shapes.small) {
                     Text(
@@ -188,7 +189,7 @@ private fun AsignacionCard(
             Text(
                 text = actividad?.titulo ?: "Actividad no disponible",
                 fontSize = 15.sp,
-                color = InkText
+                color = inkText
             )
             Text(
                 text = if (actividad != null) {
@@ -210,13 +211,13 @@ private fun AsignacionCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Surface(color = TealLight, shape = MaterialTheme.shapes.small) {
+            Surface(color = tealLight, shape = MaterialTheme.shapes.small) {
                 Text(
                     text = "Código: ${asignacion.codigo}",
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = Teal,
+                    color = tealColor,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                 )
             }
@@ -226,7 +227,7 @@ private fun AsignacionCard(
             Text(
                 text = if (asignacion.observacion.isBlank()) "Sin observación" else asignacion.observacion,
                 fontSize = 14.sp,
-                color = if (asignacion.observacion.isBlank()) Color.Gray else InkText
+                color = if (asignacion.observacion.isBlank()) Color.Gray else inkText
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -237,7 +238,7 @@ private fun AsignacionCard(
             ) {
                 Text(
                     text = if (asignacion.observacion.isBlank()) "Agregar observación" else "Editar observación",
-                    color = InkText,
+                    color = inkText,
                     fontSize = 14.sp
                 )
             }
@@ -248,7 +249,7 @@ private fun AsignacionCard(
 @Composable
 private fun Dato(etiqueta: String, valor: String) {
     Column {
-        Text(text = valor, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = InkText)
+        Text(text = valor, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = inkText)
         Text(text = etiqueta, fontSize = 12.sp, color = Color.Gray)
     }
 }
@@ -290,7 +291,7 @@ private fun DialogoObservacion(
         confirmButton = {
             Button(
                 onClick = onGuardar,
-                colors = ButtonDefaults.buttonColors(containerColor = Teal)
+                colors = ButtonDefaults.buttonColors(containerColor = tealColor)
             ) { Text("Guardar") }
         },
         dismissButton = { TextButton(onClick = onCerrar) { Text("Cancelar") } }

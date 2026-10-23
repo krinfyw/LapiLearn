@@ -17,10 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.lapilearn.model.PasoEstudiante
 import com.example.lapilearn.ui.component.estudiante.*
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.viewModels.EstudianteViewModel
-
-private val Teal = Color(0xFF2C6E7F)
-private val Ink = Color(0xFF22303A)
 
 @Composable
 fun EstudiantePregunta(viewModel: EstudianteViewModel, onSalir: () -> Unit) {
@@ -29,26 +29,63 @@ fun EstudiantePregunta(viewModel: EstudianteViewModel, onSalir: () -> Unit) {
     val sesion = estado.sesion
     BackHandler { if (!estado.cargando) confirmarSalida = true }
 
-    // Colores locales: no cambia el tema de las pantallas de los otros perfiles.
-    MaterialTheme(colorScheme = lightColorScheme(primary = Teal, onPrimary = Color.White,
-        background = Color(0xFFFBF8F2), surface = Color.White, onSurface = Ink, onBackground = Ink)) {
-        Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
-            .safeDrawingPadding().imePadding().verticalScroll(rememberScrollState())
-            .padding(20.dp).widthIn(max = 720.dp).animateContentSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("Práctica de estudiante", style = MaterialTheme.typography.labelLarge, color = Teal)
-            Text(sesion?.actividad?.titulo ?: "Tu actividad", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+    // Usamos las variables globales de ui.theme
+    MaterialTheme(
+        colorScheme = lightColorScheme(
+            primary = tealColor,
+            onPrimary = Color.White,
+            background = creamBg,
+            surface = Color.White,
+            onSurface = inkText,
+            onBackground = inkText
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .safeDrawingPadding()
+                .imePadding()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp)
+                .widthIn(max = 720.dp)
+                .animateContentSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Práctica de estudiante",
+                style = MaterialTheme.typography.labelLarge,
+                color = tealColor
+            )
+            Text(
+                text = sesion?.actividad?.titulo ?: "Tu actividad",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+
             if (estado.cargando) LinearProgressIndicator(Modifier.fillMaxWidth())
-            AnimatedVisibility(estado.error != null) {
-                Text(estado.error.orEmpty(), color = MaterialTheme.colorScheme.error)
+
+            AnimatedVisibility(visible = estado.error != null) {
+                Text(
+                    text = estado.error.orEmpty(),
+                    color = MaterialTheme.colorScheme.error
+                )
             }
+
             if (sesion == null) {
                 Text(if (estado.cargando) "Cargando actividad…" else "Ingresa tu código para cargar una actividad.")
-                Button(onClick = onSalir, enabled = !estado.cargando) { Text("Volver al código") }
+                Button(onClick = onSalir, enabled = !estado.cargando) {
+                    Text("Volver al código")
+                }
             } else {
-                Text("${sesion.actividad.modulo} · ${sesion.actividad.curso} · Intento ${sesion.intento.numero} de ${sesion.actividad.intentosPermitidos}",
-                    style = MaterialTheme.typography.bodyMedium)
-                AnimatedContent(targetState = estado.paso, label = "pasoEstudiante") { paso ->
+                Text(
+                    text = "${sesion.actividad.modulo} · ${sesion.actividad.curso} · Intento ${sesion.intento.numero} de ${sesion.actividad.intentosPermitidos}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                AnimatedContent(
+                    targetState = estado.paso,
+                    label = "pasoEstudiante"
+                ) { paso ->
                     when (paso) {
                         PasoEstudiante.INSTRUCCIONES -> InstruccionesEstudiante(estado, viewModel::comenzar)
                         PasoEstudiante.PREGUNTA -> PreguntaEstudiante(estado, viewModel::seleccionar, viewModel::solicitarConfirmacion)
@@ -56,23 +93,61 @@ fun EstudiantePregunta(viewModel: EstudianteViewModel, onSalir: () -> Unit) {
                         PasoEstudiante.RESULTADO -> ResultadoEstudiante(estado, viewModel::reintentar)
                     }
                 }
-                OutlinedButton(onClick = { confirmarSalida = true }, enabled = !estado.cargando,
-                    modifier = Modifier.fillMaxWidth()) { Text("Salir de la actividad") }
+                OutlinedButton(
+                    onClick = { confirmarSalida = true },
+                    enabled = !estado.cargando,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Salir de la actividad")
+                }
             }
         }
+
         if (estado.confirmar) {
-            AlertDialog(onDismissRequest = viewModel::cancelarConfirmacion,
+            AlertDialog(
+                onDismissRequest = viewModel::cancelarConfirmacion,
                 title = { Text("¿Confirmas tu respuesta?") },
-                text = { Text("Elegiste: ${estado.preguntaActual?.alternativas?.getOrNull(estado.seleccion ?: -1).orEmpty()}\nUna vez enviada no podrás cambiarla en este intento.") },
-                confirmButton = { TextButton(onClick = viewModel::confirmarRespuesta, enabled = !estado.cargando) { Text(if (estado.cargando) "Guardando…" else "Confirmar") } },
-                dismissButton = { TextButton(onClick = viewModel::cancelarConfirmacion, enabled = !estado.cargando) { Text("Volver") } })
+                text = {
+                    Text("Elegiste: ${estado.preguntaActual?.alternativas?.getOrNull(estado.seleccion ?: -1).orEmpty()}\nUna vez enviada no podrás cambiarla en este intento.")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = viewModel::confirmarRespuesta,
+                        enabled = !estado.cargando
+                    ) {
+                        Text(if (estado.cargando) "Guardando…" else "Confirmar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = viewModel::cancelarConfirmacion,
+                        enabled = !estado.cargando
+                    ) {
+                        Text("Volver")
+                    }
+                }
+            )
         }
+
         if (confirmarSalida) {
-            AlertDialog(onDismissRequest = { confirmarSalida = false },
+            AlertDialog(
+                onDismissRequest = { confirmarSalida = false },
                 title = { Text("¿Salir de la actividad?") },
                 text = { Text("Las respuestas confirmadas están guardadas. Puedes continuar con el mismo código en este dispositivo.") },
-                confirmButton = { TextButton(onClick = { confirmarSalida = false; onSalir() }) { Text("Salir") } },
-                dismissButton = { TextButton(onClick = { confirmarSalida = false }) { Text("Continuar aquí") } })
+                confirmButton = {
+                    TextButton(onClick = {
+                        confirmarSalida = false
+                        onSalir()
+                    }) {
+                        Text("Salir")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { confirmarSalida = false }) {
+                        Text("Continuar aquí")
+                    }
+                }
+            )
         }
     }
 }

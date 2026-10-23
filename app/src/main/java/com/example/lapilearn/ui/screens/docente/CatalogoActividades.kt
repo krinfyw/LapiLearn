@@ -16,6 +16,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
+import com.example.lapilearn.ui.theme.coralColor
+import com.example.lapilearn.ui.theme.coralLight
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.inkText
+import com.example.lapilearn.ui.theme.okColor
+import com.example.lapilearn.ui.theme.okLight
+import com.example.lapilearn.ui.theme.tealColor
+import com.example.lapilearn.ui.theme.tealLight
 import com.example.lapilearn.viewModels.ActividadViewModel
 
 @Composable
@@ -23,16 +31,6 @@ fun CatalogoActividades(
     navController: NavController,
     viewModel: ActividadViewModel
 ) {
-    val creamBg = Color(0xFFFBF8F2)
-    val inkText = Color(0xFF22303A)
-    val tealColor = Color(0xFF2C6E7F)
-    val tealLight = Color(0xFFE4F0F0)
-    val coralColor = Color(0xFFE8804A)
-    val coralLight = Color(0xFFFCEADF)
-    val okColor = Color(0xFF4E9F6B)
-    val okLight = Color(0xFFE5F5EB)
-    val lineColor = Color(0xFFE1D9C8)
-
     val actividades by viewModel.actividades.collectAsStateWithLifecycle()
 
     var moduloSeleccionado by remember {

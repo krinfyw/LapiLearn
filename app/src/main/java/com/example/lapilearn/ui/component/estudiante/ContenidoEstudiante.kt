@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.lapilearn.model.EstudianteUiState
+import com.example.lapilearn.ui.theme.tealColor
+import com.example.lapilearn.ui.theme.tealLight
 
 // Como Formulario en el ejemplo: recibe datos y avisa las acciones mediante lambdas.
 @Composable
@@ -47,7 +49,7 @@ fun PreguntaEstudiante(
         Text("Pregunta ${indice + 1} de ${sesion.preguntas.size}", style = MaterialTheme.typography.titleMedium)
         LinearProgressIndicator(progress = { progreso }, modifier = Modifier.fillMaxWidth())
         if (pregunta.textoApoyo.isNotBlank()) {
-            Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFE4F0F0))) {
+            Card(colors = CardDefaults.cardColors(containerColor = tealLight)) {
                 Text(pregunta.textoApoyo, Modifier.padding(16.dp), style = MaterialTheme.typography.bodyLarge)
             }
         }
@@ -76,8 +78,8 @@ private fun AlternativaEstudiante(
 ) {
     Surface(
         shape = MaterialTheme.shapes.medium,
-        color = if (seleccionada) Color(0xFFE4F0F0) else Color.White,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+        color = if (seleccionada) tealLight else Color.White,
+        border = BorderStroke(1.dp, tealColor),
         modifier = Modifier.fillMaxWidth().selectable(
             selected = seleccionada, enabled = habilitada, role = Role.RadioButton,
             onClick = onSeleccionar
@@ -100,7 +102,7 @@ fun RetroalimentacionEstudiante(estado: EstudianteUiState, onSiguiente: () -> Un
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Icon(
             if (respuesta.esCorrecta) Icons.Default.CheckCircle else Icons.Default.Info,
-            contentDescription = null, tint = MaterialTheme.colorScheme.primary,
+            contentDescription = null, tint = tealColor,
             modifier = Modifier.size(40.dp)
         )
         Text(if (respuesta.esCorrecta) "¡Muy bien!" else "Sigamos aprendiendo",

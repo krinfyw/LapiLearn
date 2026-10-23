@@ -1,5 +1,6 @@
 package com.example.lapilearn.ui.screens.inicio
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -11,10 +12,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.DocenteUiState
+import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.viewModels.DocenteViewModel
-import com.example.lapilearn.navigation.Screen
 
 // 1. Composable Contenedor (Stateful)
 @Composable
@@ -48,6 +51,7 @@ fun FormularioLoginDocente(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(creamBg)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -82,7 +86,7 @@ fun FormularioLoginDocente(
         Button(
             onClick = onIngresarClick,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2C6E7F),
+                containerColor = tealColor,
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth()

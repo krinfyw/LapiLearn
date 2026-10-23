@@ -1,5 +1,6 @@
 package com.example.lapilearn.ui.screens.inicio
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,6 +17,9 @@ import com.example.lapilearn.model.AsistenteUiState
 import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.ui.theme.coralColor
+import com.example.lapilearn.ui.theme.creamBg
+import com.example.lapilearn.ui.theme.inkText
 import com.example.lapilearn.viewModels.AsistenteViewModel
 
 // 1. Composable Contenedor (Stateful): Maneja el ViewModel, la navegación y el estado del ciclo de vida.
@@ -55,6 +59,7 @@ fun FormularioLoginAsistente(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(creamBg)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -65,7 +70,8 @@ fun FormularioLoginAsistente(
             IconButton(onClick = onVolverClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver al inicio"
+                    contentDescription = "Volver al inicio",
+                    tint = inkText
                 )
             }
         }
@@ -100,7 +106,7 @@ fun FormularioLoginAsistente(
         Button(
             onClick = onIngresarClick,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF2C6E7F),
+                containerColor = coralColor,
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth()

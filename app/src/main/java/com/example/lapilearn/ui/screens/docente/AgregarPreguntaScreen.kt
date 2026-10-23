@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
+import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.viewModels.ActividadViewModel
 
 @Composable
@@ -29,7 +30,6 @@ fun AgregarPreguntaScreen(
     var textoApoyo by remember { mutableStateOf("") }
     var retroalimentacion by remember { mutableStateOf("") }
     var mostrarMensaje by remember { mutableStateOf(false) }
-    val tealColor = Color(0xFF2C6E7F)
 
     Column(
         modifier = Modifier
