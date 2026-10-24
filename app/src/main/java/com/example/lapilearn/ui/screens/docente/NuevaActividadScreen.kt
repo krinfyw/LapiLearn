@@ -13,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.lapilearn.model.Actividad
-import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.components.CampoTexto
 import com.example.lapilearn.ui.theme.inkText
@@ -67,7 +65,7 @@ fun NuevaActividadScreen(
             etiqueta = "Título",
             onChange = { titulo = it }
         )
-        if (errorTitulo.isNotBlank()) { //NO SE MUESTRA
+        if (errorTitulo.isNotBlank()) {
             Text(
                 text = errorTitulo,
                 color = Color.Red
