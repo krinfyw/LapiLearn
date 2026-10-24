@@ -55,6 +55,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Pregunta",
             onChange = { enunciado = it }
         )
+        if (viewModel.errorGuardado == "La pregunta es obligatoria.") {
+            Text("La pregunta es obligatoria.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         CampoTexto(
@@ -62,6 +65,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Alternativa A",
             onChange = { opcionA = it }
         )
+        if (viewModel.errorGuardado == "La alternativa A es obligatoria.") {
+            Text("La alternativa A es obligatoria.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         CampoTexto(
@@ -69,6 +75,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Alternativa B",
             onChange = { opcionB = it }
         )
+        if (viewModel.errorGuardado == "La alternativa B es obligatoria.") {
+            Text("La alternativa B es obligatoria.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         CampoTexto(
@@ -76,6 +85,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Alternativa C",
             onChange = { opcionC = it }
         )
+        if (viewModel.errorGuardado == "La alternativa C es obligatoria.") {
+            Text("La alternativa C es obligatoria.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         CampoTexto(
@@ -83,6 +95,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Alternativa D",
             onChange = { opcionD = it }
         )
+        if (viewModel.errorGuardado == "La alternativa D es obligatoria.") {
+            Text("La alternativa D es obligatoria.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         Text("Selecciona la respuesta correcta")
@@ -121,6 +136,9 @@ fun AgregarPreguntaScreen(
             etiqueta = "Retroalimentación",
             onChange = { retroalimentacion = it }
         )
+        if (viewModel.errorGuardado == "Escribe la retroalimentación.") {
+            Text("Escribe la retroalimentación.", color = Color.Red)
+        }
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(

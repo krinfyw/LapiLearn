@@ -133,17 +133,17 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         return valor.toIntOrNull()?.takeIf {
             it > 0
         } ?: throw IllegalArgumentException(
-            "Los intentos deben ser un número entero mayor que cero."
+            "Ingresa un número de intentos mayor que cero."
         )
     }
 
     // GUARDAR ACTIVIDAD EN ROOM
     private suspend fun agregarEnRoom(actividad: Actividad): Long {
-        require(
-            actividad.titulo.isNotBlank() &&
-                    actividad.objetivo.isNotBlank()
-        ) {
-            "Completa título y objetivo."
+        require(actividad.titulo.isNotBlank()) {
+            "El título es obligatorio."
+        }
+        require(actividad.objetivo.isNotBlank()) {
+            "El objetivo es obligatorio."
         }
         return dao.insertar(
             ActividadEntity(
@@ -212,14 +212,20 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                     ?: throw IllegalArgumentException(
                         "Primero selecciona una actividad."
                     )
-                require(
-                    enunciado.isNotBlank() &&
-                            opcionA.isNotBlank() &&
-                            opcionB.isNotBlank() &&
-                            opcionC.isNotBlank() &&
-                            opcionD.isNotBlank()
-                ) {
-                    "Completa la pregunta y las cuatro alternativas."
+                require(enunciado.isNotBlank()) {
+                    "La pregunta es obligatoria."
+                }
+                require(opcionA.isNotBlank()) {
+                    "La alternativa A es obligatoria."
+                }
+                require(opcionB.isNotBlank()) {
+                    "La alternativa B es obligatoria."
+                }
+                require(opcionC.isNotBlank()) {
+                    "La alternativa C es obligatoria."
+                }
+                require(opcionD.isNotBlank()) {
+                    "La alternativa D es obligatoria."
                 }
                 require(correcta in 0..3) {
                     "Selecciona una respuesta correcta."
@@ -272,34 +278,45 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
             errorGuardado = null
             try {
                 val pregunta = preguntaSeleccionada
+                require(enunciado.isNotBlank()) {
+                    "La pregunta es obligatoria."
+                }
+                require(opcionA.isNotBlank()) {
+                    "La alternativa A es obligatoria."
+                }
+                require(opcionB.isNotBlank()) {
+                    "La alternativa B es obligatoria."
+                }
+                require(opcionC.isNotBlank()) {
+                    "La alternativa C es obligatoria."
+                }
+                require(opcionD.isNotBlank()) {
+                    "La alternativa D es obligatoria."
+                }
+                require(correcta in 0..3) {
+                    "Selecciona una respuesta correcta."
+                }
+                require(retroalimentacion.isNotBlank()) {
+                    "Escribe la retroalimentación."
+                }
                 if (pregunta != null) {
-                    if (enunciado.isNotBlank() &&
-                        opcionA.isNotBlank() &&
-                        opcionB.isNotBlank() &&
-                        opcionC.isNotBlank() &&
-                        opcionD.isNotBlank() &&
-                        retroalimentacion.isNotBlank()
-                    ) {
-                        daoPreguntas.actualizarPregunta(
-                            pregunta.copy(
-                                enunciado = enunciado,
-                                opcionA = opcionA,
-                                opcionB = opcionB,
-                                opcionC = opcionC,
-                                opcionD = opcionD,
-                                correcta = correcta,
-                                textoApoyo = textoApoyo,
-                                retroalimentacion = retroalimentacion
-                            )
+                    daoPreguntas.actualizarPregunta(
+                        pregunta.copy(
+                            enunciado = enunciado,
+                            opcionA = opcionA,
+                            opcionB = opcionB,
+                            opcionC = opcionC,
+                            opcionD = opcionD,
+                            correcta = correcta,
+                            textoApoyo = textoApoyo,
+                            retroalimentacion = retroalimentacion
                         )
-                        consultarPreguntas()
-                        preguntaSeleccionada = null
-                        onGuardada()
-                    } else {
-                        errorGuardado = "Completa todos los campos de la pregunta."
-                    }
+                    )
+                    consultarPreguntas()
+                    preguntaSeleccionada = null
+                    onGuardada()
                 } else {
-                    errorGuardado = "Selecciona una pregunta para editar."
+                    errorGuardado = "Completa todos los campos de la pregunta."
                 }
             } catch (e: CancellationException) {
                 throw e
