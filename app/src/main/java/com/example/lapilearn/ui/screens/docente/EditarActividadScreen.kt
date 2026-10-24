@@ -34,6 +34,7 @@ fun EditarActividadScreen(
     var curso by remember { mutableStateOf(actividad.curso) }
     var dificultad by remember { mutableStateOf(actividad.dificultad) }
     var objetivo by remember { mutableStateOf(actividad.objetivo) }
+    var instrucciones by remember { mutableStateOf(actividad.instrucciones) }
     var intentos by remember { mutableStateOf(actividad.intentos) }
     var estado by remember { mutableStateOf(actividad.estado) }
 
@@ -195,7 +196,15 @@ fun EditarActividadScreen(
             etiqueta = "Objetivo",
             onChange = { objetivo = it }
         )
+        Spacer(modifier = Modifier.height(8.dp))
 
+
+
+        CampoTexto(
+            valor = instrucciones,
+            etiqueta = "Instrucciones",
+            onChange = { instrucciones = it }
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         CampoTexto(
@@ -203,7 +212,6 @@ fun EditarActividadScreen(
             etiqueta = "Intentos",
             onChange = { intentos = it }
         )
-
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
@@ -211,7 +219,6 @@ fun EditarActividadScreen(
             fontSize = 12.sp,
             color = Color.Gray
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(
@@ -242,7 +249,6 @@ fun EditarActividadScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(24.dp))
 
         // GUARDAR CAMBIOS
@@ -259,7 +265,6 @@ fun EditarActividadScreen(
         ) {
             Text("+ Agregar pregunta")
         }
-
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
@@ -272,6 +277,7 @@ fun EditarActividadScreen(
                         dificultad = dificultad,
                         objetivo = objetivo,
                         intentos = intentos,
+                        instrucciones = instrucciones,
                         estado = estado
                     )
                 ) {

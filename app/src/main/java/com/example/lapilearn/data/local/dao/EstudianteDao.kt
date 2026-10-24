@@ -32,6 +32,9 @@ interface EstudianteDao {
     @Insert
     suspend fun insertarPregunta(pregunta: PreguntaEntity)
 
+    @Update
+    suspend fun actualizarPregunta(pregunta: PreguntaEntity)
+
     @Query("SELECT COALESCE(MAX(orden), 0) FROM preguntas WHERE actividadId = :actividadId")
     suspend fun ultimoOrdenPregunta(actividadId: Int): Int
 }

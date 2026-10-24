@@ -8,5 +8,6 @@ data class Actividad(
     val dificultad: String,
     val objetivo: String,
     val intentos: String,
-    val estado: String
+    val estado: String,
+    val instrucciones: String = ""
 )

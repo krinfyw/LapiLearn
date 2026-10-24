@@ -18,6 +18,15 @@ data class ActividadEntity(
     val codigo: String,
     val instrucciones: String
 ) {
-    fun toModel() = Actividad(id, titulo, modulo, curso, dificultad, objetivo,
-        intentosPermitidos.toString(), estado)
+    fun toModel() = Actividad(
+        id,
+        titulo,
+        modulo,
+        curso,
+        dificultad,
+        objetivo,
+        intentosPermitidos.toString(),
+        estado,
+        instrucciones
+    )
 }

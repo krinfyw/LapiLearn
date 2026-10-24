@@ -35,11 +35,14 @@ fun NuevaActividadScreen(
     var curso by remember { mutableStateOf("1° básico") }
     var dificultad by remember { mutableStateOf("Fácil") }
     var objetivo by remember { mutableStateOf("") }
+    var instrucciones by remember { mutableStateOf("") }
     var intentos by remember { mutableStateOf("") }
     var estado by remember { mutableStateOf("Borrador") }
     var actividadGuardada by remember { mutableStateOf(false) }
     var mensaje by remember { mutableStateOf("") }
-
+    var errorTitulo by remember { mutableStateOf("") }
+    var errorObjetivo by remember { mutableStateOf("") }
+    var errorIntentos by remember { mutableStateOf("") }
     var mostrarModulos by remember { mutableStateOf(false) }
     var mostrarCursos by remember { mutableStateOf(false) }
     var mostrarDificultades by remember { mutableStateOf(false) }
@@ -65,7 +68,12 @@ fun NuevaActividadScreen(
             etiqueta = "Título",
             onChange = { titulo = it }
         )
-
+        if (errorTitulo.isNotBlank()) {
+            Text(
+                text = errorTitulo,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
 
         // SELECCIONAR MÓDULO
@@ -222,7 +230,20 @@ fun NuevaActividadScreen(
             etiqueta = "Objetivo",
             onChange = { objetivo = it }
         )
+        if (errorObjetivo.isNotBlank()) {
+            Text(
+                text = errorObjetivo,
+                color = Color.Red
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
 
+
+        CampoTexto(
+            valor = instrucciones,
+            etiqueta = "Instrucciones",
+            onChange = { instrucciones = it }
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         // INTENTOS
@@ -232,31 +253,31 @@ fun NuevaActividadScreen(
             etiqueta = "Intentos",
             onChange = { intentos = it }
         )
-
+        if (errorIntentos.isNotBlank()) {
+            Text(
+                text = errorIntentos,
+                color = Color.Red
+            )
+        }
         Spacer(modifier = Modifier.height(12.dp))
 
         // ESTADO DE LA ACTIVIDAD
-
         Text(
             text = "Estado de la Actividad",
             fontSize = 12.sp,
             color = Color.Gray
         )
-
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
             for (opcion in listOf(
                 "Borrador",
                 "Disponible",
                 "Desactivar"
             )) {
-
                 val seleccionado = estado == opcion
-
                 Button(
                     onClick = {
                         estado = opcion
@@ -277,39 +298,26 @@ fun NuevaActividadScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(24.dp))
 
         // GUARDAR ACTIVIDAD
 
         Button(
             onClick = {
-
-                if (titulo.isNotBlank() &&
-                    objetivo.isNotBlank() &&
-                    intentos.isNotBlank()
-                ) {
-
-                    mensaje =  "Botón Guardar presionado"
-
-                    val nuevaActividad = Actividad(
-                        id = viewModel.nuevoId(),
-                        titulo = titulo,
-                        modulo = modulo,
-                        curso = curso,
-                        dificultad = dificultad,
-                        objetivo = objetivo,
-                        intentos = intentos,
-                        estado = estado
-                    )
-
-                    viewModel.agregar(nuevaActividad) {
-                        actividadGuardada = true
-                        mensaje = "Actividad guardada correctamente."
-                    }
-
-                } else {
-                    mensaje = ""
+                val nuevaActividad = Actividad(
+                    id = viewModel.nuevoId(),
+                    titulo = titulo,
+                    modulo = modulo,
+                    curso = curso,
+                    dificultad = dificultad,
+                    objetivo = objetivo,
+                    intentos = intentos,
+                    estado = estado,
+                    instrucciones = instrucciones
+                )
+                viewModel.agregar(nuevaActividad) {
+                    actividadGuardada = true
+                    mensaje = "Actividad guardada correctamente."
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -322,37 +330,31 @@ fun NuevaActividadScreen(
                 fontWeight = FontWeight.Bold
             )
         }
-
         Spacer(modifier = Modifier.height(12.dp))
 
         // MENSAJES
-
         if (mensaje.isNotBlank()) {
             Text(
                 text = mensaje,
                 color = if (actividadGuardada) tealColor else Color.Red
             )
         }
-
         if (viewModel.errorGuardado != null) {
-            Text(
-                text = viewModel.errorGuardado ?: "",
-                color = Color.Red
-            )
+            errorTitulo = ""
+            errorObjetivo = ""
+            errorIntentos = ""
+
+            if (viewModel.errorGuardado == "El título es obligatorio.") {
+                Text("El título es obligatorio.", color = Color.Red)
+            }
+            if (viewModel.errorGuardado == "El objetivo es obligatorio.") {
+                Text("El objetivo es obligatorio.", color = Color.Red)
+            }
+            if (viewModel.errorGuardado == "Ingresa un número de intentos mayor que cero.") {
+                Text("Ingresa un número de intentos mayor que cero.", color = Color.Red)
+            }
         }
         Spacer(modifier = Modifier.height(12.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(Screen.AgregarPregunta.route)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = actividadGuardada
-        ) {
-            Text("+ Agregar pregunta")
-        }
-        Spacer(modifier = Modifier.height(12.dp))
-
         OutlinedButton(
             onClick = {
                 navController.popBackStack()
