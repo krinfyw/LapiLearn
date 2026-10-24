@@ -318,7 +318,7 @@ fun NuevaActividadScreen(
                     }
 
                 } else {
-                    mensaje = ""
+                    mensaje = "Completa título, objetivo e intentos."
                 }
             },
             modifier = Modifier.fillMaxWidth(),

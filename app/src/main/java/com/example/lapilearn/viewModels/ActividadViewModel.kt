@@ -21,6 +21,8 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     private val db = AppDatabase.getInstance(application)
     private val dao = db.actividadDao()
     private val daoPreguntas = db.estudianteDao()
+    var preguntasGuardadas by mutableStateOf<List<PreguntaEntity>>(emptyList())
+        private set
 
     val actividades = dao.observarTodas()
         .map { lista -> lista.map { it.toModel() } }
@@ -38,9 +40,14 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     private var idSeleccionada: Int? = null
     private var actividadNueva: Actividad? = null
 
+    var preguntaSeleccionada by mutableStateOf<PreguntaEntity?>(null)
+
     // SELECCIONAR ACTIVIDAD
     fun seleccionar(id: Int) {
         idSeleccionada = id
+    }
+    fun seleccionarPregunta(pregunta: PreguntaEntity) {
+        preguntaSeleccionada = pregunta
     }
     fun obtenerSeleccionada(): Actividad? {
         val actividad = actividades.value.find {
@@ -58,6 +65,15 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     suspend fun obtenerActividadPorId(): Actividad? {
         val id = idSeleccionada ?: return null
         return dao.porId(id)?.toModel()
+    }
+
+    fun consultarPreguntas() {
+        viewModelScope.launch {
+            val actividad = obtenerActividadPorId()
+            if (actividad != null) {
+                preguntasGuardadas = daoPreguntas.preguntas(actividad.id)
+            }
+        }
     }
 
     fun actualizar(actividad: Actividad, onGuardada: () -> Unit) = guardar(onGuardada) {
@@ -238,6 +254,58 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                     ?: "No se pudo guardar la pregunta."
             } finally {
                 guardandoPregunta = false
+            }
+        }
+    }
+    fun actualizarPregunta(
+        enunciado: String,
+        opcionA: String,
+        opcionB: String,
+        opcionC: String,
+        opcionD: String,
+        correcta: Int,
+        textoApoyo: String,
+        retroalimentacion: String,
+        onGuardada: () -> Unit
+    ) {
+        viewModelScope.launch {
+            errorGuardado = null
+            try {
+                val pregunta = preguntaSeleccionada
+                if (pregunta != null) {
+                    if (enunciado.isNotBlank() &&
+                        opcionA.isNotBlank() &&
+                        opcionB.isNotBlank() &&
+                        opcionC.isNotBlank() &&
+                        opcionD.isNotBlank() &&
+                        retroalimentacion.isNotBlank()
+                    ) {
+                        daoPreguntas.actualizarPregunta(
+                            pregunta.copy(
+                                enunciado = enunciado,
+                                opcionA = opcionA,
+                                opcionB = opcionB,
+                                opcionC = opcionC,
+                                opcionD = opcionD,
+                                correcta = correcta,
+                                textoApoyo = textoApoyo,
+                                retroalimentacion = retroalimentacion
+                            )
+                        )
+                        consultarPreguntas()
+                        preguntaSeleccionada = null
+                        onGuardada()
+                    } else {
+                        errorGuardado = "Completa todos los campos de la pregunta."
+                    }
+                } else {
+                    errorGuardado = "Selecciona una pregunta para editar."
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                errorGuardado = e.message
+                    ?: "No se pudo actualizar la pregunta."
             }
         }
     }
