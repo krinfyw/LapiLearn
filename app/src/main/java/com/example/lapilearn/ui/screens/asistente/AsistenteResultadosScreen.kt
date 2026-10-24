@@ -263,25 +263,39 @@ private fun DialogoObservacion(
     onGuardar: () -> Unit,
     onCerrar: () -> Unit
 ) {
+    val colorError = Color(0xFFB3261E)
+
     AlertDialog(
+        containerColor = creamBg,
+        titleContentColor = inkText,
+        textContentColor = inkText,
         onDismissRequest = onCerrar,
         title = { Text("Observación para $alias") },
         text = {
             Column {
                 Text(
                     text = "Escribe una observación pedagógica general. No incluyas nombres reales, " +
-                        "diagnósticos ni notas.",
+                            "diagnósticos ni notas.",
                     fontSize = 14.sp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
+
                 OutlinedTextField(
                     value = texto,
                     onValueChange = onTextoChange,
                     label = { Text("Observación") },
                     isError = error != null,
                     supportingText = {
-                        Text(error ?: "${texto.length}/${AsignacionReglas.MAX_OBSERVACION}")
+                        Text(
+                            text = error ?: "${texto.length}/${AsignacionReglas.MAX_OBSERVACION}",
+                            color = if (error != null) colorError else inkText
+                        )
                     },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = inkText,
+                        unfocusedTextColor = inkText,
+                        errorTextColor = inkText
+                    ),
                     minLines = 3,
                     maxLines = 5,
                     modifier = Modifier.fillMaxWidth()
@@ -291,12 +305,23 @@ private fun DialogoObservacion(
         confirmButton = {
             Button(
                 onClick = onGuardar,
-                colors = ButtonDefaults.buttonColors(containerColor = tealColor)
-            ) { Text("Guardar") }
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = tealColor,
+                    contentColor = Color.White
+                )
+            ) {
+                Text("Guardar")
+            }
         },
-        dismissButton = { TextButton(onClick = onCerrar) { Text("Cancelar") } }
+        dismissButton = {
+            TextButton(onClick = onCerrar) {
+                Text("Cancelar", color = tealColor)
+            }
+        }
     )
 }
+
+
 
 private fun formatoFecha(millis: Long): String =
     SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(millis))
