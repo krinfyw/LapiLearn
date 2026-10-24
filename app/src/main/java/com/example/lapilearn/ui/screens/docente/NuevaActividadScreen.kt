@@ -37,7 +37,6 @@ fun NuevaActividadScreen(
     var objetivo by remember { mutableStateOf("") }
     var instrucciones by remember { mutableStateOf("") }
     var intentos by remember { mutableStateOf("") }
-    var estado by remember { mutableStateOf("Borrador") }
     var actividadGuardada by remember { mutableStateOf(false) }
     var mensaje by remember { mutableStateOf("") }
     var errorTitulo by remember { mutableStateOf("") }
@@ -68,7 +67,7 @@ fun NuevaActividadScreen(
             etiqueta = "Título",
             onChange = { titulo = it }
         )
-        if (errorTitulo.isNotBlank()) {
+        if (errorTitulo.isNotBlank()) { //NO SE MUESTRA
             Text(
                 text = errorTitulo,
                 color = Color.Red
@@ -261,44 +260,13 @@ fun NuevaActividadScreen(
         }
         Spacer(modifier = Modifier.height(12.dp))
 
-        // ESTADO DE LA ACTIVIDAD
         Text(
-            text = "Estado de la Actividad",
-            fontSize = 12.sp,
-            color = Color.Gray
+            text = "Esta actividad se guardara como: Borrador",
+            color = inkText,
+            fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            for (opcion in listOf(
-                "Borrador",
-                "Disponible",
-                "Desactivar"
-            )) {
-                val seleccionado = estado == opcion
-                Button(
-                    onClick = {
-                        estado = opcion
-                    },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor =
-                            if (seleccionado) tealColor else Color.White,
-                        contentColor =
-                            if (seleccionado) Color.White else inkText
-                    )
-                ) {
-                    Text(
-                        text = opcion,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        }
         Spacer(modifier = Modifier.height(24.dp))
+
 
         // GUARDAR ACTIVIDAD
 
@@ -312,7 +280,7 @@ fun NuevaActividadScreen(
                     dificultad = dificultad,
                     objetivo = objetivo,
                     intentos = intentos,
-                    estado = estado,
+                    estado = "borrador",
                     instrucciones = instrucciones
                 )
                 viewModel.agregar(nuevaActividad) {
