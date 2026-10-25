@@ -62,6 +62,34 @@ Los datos y resultados se comunican a la interfaz mediante estado observable.
 - **DAO:** declaran las consultas, inserciones y actualizaciones.
 - **Entities:** representan los registros almacenados en las tablas de Room.
 
+## Pasos para ejecutar
+
+### Requisitos
+
+- Android Studio compatible con la configuración del proyecto.
+- Android SDK y dependencias indicados en los archivos de Gradle.
+- Un teléfono o emulador con Android 9 (API 28) o superior.
+- Conexión a internet para descargar las dependencias durante la configuración inicial.
+
+### Ejecución
+
+1. Clona o descarga el repositorio de GitHub.
+2. Abre Android Studio y selecciona **Open**.
+3. Selecciona la carpeta raíz de LapiLearn, donde se encuentra `settings.gradle.kts`.
+4. Espera a que termine la sincronización de Gradle. Instala los componentes del SDK que Android Studio solicite.
+5. Prepara el dispositivo:
+   - **Teléfono físico:** activa las opciones de desarrollador y la depuración USB, conecta el cable y autoriza el computador.
+   - **Emulador:** crea e inicia un dispositivo virtual desde Device Manager.
+6. Selecciona el dispositivo y la configuración de ejecución del módulo **app**.
+7. Presiona el boton verde "run" para compilar, instalar y abrir la aplicación.
+
+### Cuentas ficticias de prueba
+
+| Perfil | Correo | Contraseña |
+| --- | --- | --- |
+| Docente | docente@duoc.cl | 123456 |
+| Asistente | asistente@duoc.cl | 123456 |
+
 Integrantes:
 - Santiago Aburto
 - Elias Gonzales
