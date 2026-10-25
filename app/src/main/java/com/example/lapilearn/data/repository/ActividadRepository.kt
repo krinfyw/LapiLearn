@@ -7,7 +7,6 @@ import com.example.lapilearn.data.local.entity.ActividadEntity
 import com.example.lapilearn.data.local.entity.PreguntaEntity
 import com.example.lapilearn.model.Actividad
 import kotlinx.coroutines.flow.map
-import java.util.UUID
 
 class ActividadRepository(private val db: AppDatabase) {
     constructor(context: Context) : this(AppDatabase.getInstance(context.applicationContext))
@@ -54,9 +53,6 @@ class ActividadRepository(private val db: AppDatabase) {
                 objetivo = actividad.objetivo.trim(),
                 intentosPermitidos = intentos(actividad.intentos),
                 estado = "Borrador",
-                codigo = UUID.randomUUID().toString()
-                    .replace("-", "")
-                    .uppercase(),
                 instrucciones = actividad.instrucciones
             )
         )

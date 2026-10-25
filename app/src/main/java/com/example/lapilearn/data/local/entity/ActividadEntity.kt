@@ -1,11 +1,10 @@
 package com.example.lapilearn.data.local.entity
 
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.lapilearn.model.Actividad
 
-@Entity(tableName = "actividades", indices = [Index(value = ["codigo"], unique = true)])
+@Entity(tableName = "actividades")
 data class ActividadEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val titulo: String,
@@ -15,7 +14,6 @@ data class ActividadEntity(
     val objetivo: String,
     val intentosPermitidos: Int,
     val estado: String,
-    val codigo: String,
     val instrucciones: String
 ) {
     fun toModel() = Actividad(

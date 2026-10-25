@@ -15,16 +15,21 @@ object EstudianteSchema {
             db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_intentos_actividadId_numero ON intentos(actividadId, numero)")
             db.execSQL("""CREATE TABLE IF NOT EXISTS respuestas (intentoId INTEGER NOT NULL, preguntaId INTEGER NOT NULL, alternativa INTEGER NOT NULL, esCorrecta INTEGER NOT NULL, respondidaEn INTEGER NOT NULL, PRIMARY KEY(intentoId, preguntaId), FOREIGN KEY(intentoId) REFERENCES intentos(id) ON UPDATE NO ACTION ON DELETE RESTRICT, FOREIGN KEY(preguntaId) REFERENCES preguntas(id) ON UPDATE NO ACTION ON DELETE RESTRICT)""")
             db.execSQL("CREATE INDEX IF NOT EXISTS index_respuestas_preguntaId ON respuestas(preguntaId)")
-            sembrar(db)
+            sembrar(db, incluirCodigo = true)
         }
     }
 
-    fun sembrar(db: SupportSQLiteDatabase) {
+    fun sembrar(db: SupportSQLiteDatabase, incluirCodigo: Boolean = false) {
         fun actividad(id: Int, titulo: String, modulo: String, curso: String, dificultad: String,
                       objetivo: String, intentos: Int, estado: String, codigo: String) {
-            db.execSQL("INSERT INTO actividades (id,titulo,modulo,curso,dificultad,objetivo,intentosPermitidos,estado,codigo,instrucciones) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                arrayOf<Any>(id, titulo, modulo, curso, dificultad, objetivo, intentos, estado, codigo,
-                    "Lee con calma. Selecciona una alternativa y confirma tu respuesta. Puedes pedir ayuda a tu asistente."))
+            val instrucciones = "Lee con calma. Selecciona una alternativa y confirma tu respuesta. Puedes pedir ayuda a tu asistente."
+            if (incluirCodigo) {
+                db.execSQL("INSERT INTO actividades (id,titulo,modulo,curso,dificultad,objetivo,intentosPermitidos,estado,codigo,instrucciones) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                    arrayOf<Any>(id, titulo, modulo, curso, dificultad, objetivo, intentos, estado, codigo, instrucciones))
+            } else {
+                db.execSQL("INSERT INTO actividades (id,titulo,modulo,curso,dificultad,objetivo,intentosPermitidos,estado,instrucciones) VALUES (?,?,?,?,?,?,?,?,?)",
+                    arrayOf<Any>(id, titulo, modulo, curso, dificultad, objetivo, intentos, estado, instrucciones))
+            }
         }
         actividad(1, "El bosque encantado", "Lectura", "2° básico", "Media", "Comprensión implícita", 2, "Disponible", "BOSQ01")
         actividad(2, "Sumas hasta 100", "Matemática", "2° básico", "Media", "Operatoria", 2, "Borrador", "SUMA01")

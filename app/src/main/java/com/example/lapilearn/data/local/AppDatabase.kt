@@ -22,7 +22,7 @@ import com.example.lapilearn.data.local.entity.AsignacionEntity
     entities = [DocenteEntity::class, AsistenteEntity::class, ActividadEntity::class,
         PreguntaEntity::class, IntentoEntity::class, RespuestaEntity::class,
         AsignacionEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -44,7 +44,11 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "lapilearn_database"
                 )
-                    .addMigrations(EstudianteSchema.MIGRATION_1_2, AsignacionSchema.MIGRATION_2_3)
+                    .addMigrations(
+                        EstudianteSchema.MIGRATION_1_2,
+                        AsignacionSchema.MIGRATION_2_3,
+                        ActividadSchema.MIGRATION_3_4
+                    )
                     .addCallback(object : RoomDatabase.Callback() {
                         // Datos de prueba: solo se ejecuta al crear la BD por primera vez
                         override fun onCreate(db: SupportSQLiteDatabase) {
