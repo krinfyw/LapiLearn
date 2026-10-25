@@ -19,6 +19,9 @@ data class AsistentePanelUiState(
     val guardando: Boolean = false,
     val codigoGenerado: String? = null,
 
+    // Pantalla de respuestas detalladas: asignación que se está mirando
+    val asignacionEnDetalleId: Long? = null,
+
     // Diálogo "observación"
     val asignacionEnObservacion: ResumenAsignacion? = null,
     val textoObservacion: String = "",

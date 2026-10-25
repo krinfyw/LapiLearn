@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.lapilearn.data.repository.AsignacionRepository
 import com.example.lapilearn.data.local.entity.ActividadEntity
 import com.example.lapilearn.model.AsistentePanelUiState
+import com.example.lapilearn.model.DetalleIntento
 import com.example.lapilearn.model.ResumenAsignacion
 import com.example.lapilearn.utils.AsignacionReglas
 import kotlinx.coroutines.CancellationException
@@ -47,6 +48,17 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
             asignaciones = AsignacionReglas.resumir(asignaciones, actividades, intentos, respuestas)
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AsistentePanelUiState())
+
+    // Respuestas detalladas de la asignación que la asistente está mirando.
+    val detalle: StateFlow<List<DetalleIntento>> = combine(
+        _form,
+        repository.intentos,
+        repository.preguntas,
+        repository.respuestas
+    ) { form, intentos, preguntas, respuestas ->
+        val id = form.asignacionEnDetalleId
+        if (id == null) emptyList() else AsignacionReglas.detallar(id, intentos, preguntas, respuestas)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     // Solo se pueden asignar actividades autorizadas (estado "Disponible").
     private fun filtrar(
@@ -129,6 +141,11 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
                 codigoGenerado = null
             )
         }
+
+    // ---------- Respuestas detalladas ----------
+
+    fun verRespuestas(resumen: ResumenAsignacion) =
+        _form.update { it.copy(asignacionEnDetalleId = resumen.asignacion.id) }
 
     // ---------- Observaciones pedagógicas generales (ficticias) ----------
 

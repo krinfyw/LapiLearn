@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.lapilearn.data.local.entity.AsignacionEntity
 import com.example.lapilearn.data.local.entity.IntentoEntity
+import com.example.lapilearn.data.local.entity.PreguntaEntity
 import com.example.lapilearn.data.local.entity.RespuestaEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -28,6 +29,10 @@ interface AsignacionDao {
     // Para el resumen de la asistente: intentos y respuestas ligados a una asignación.
     @Query("SELECT * FROM intentos WHERE asignacionId IS NOT NULL")
     fun observarIntentos(): Flow<List<IntentoEntity>>
+
+    // Para mostrar el detalle de cada respuesta junto a su pregunta.
+    @Query("SELECT * FROM preguntas")
+    fun observarPreguntas(): Flow<List<PreguntaEntity>>
 
     @Query("SELECT r.* FROM respuestas r INNER JOIN intentos i ON i.id = r.intentoId WHERE i.asignacionId IS NOT NULL")
     fun observarRespuestas(): Flow<List<RespuestaEntity>>
