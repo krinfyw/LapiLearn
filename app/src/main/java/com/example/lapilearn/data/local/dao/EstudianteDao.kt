@@ -32,6 +32,9 @@ interface EstudianteDao {
     @Insert
     suspend fun insertarPregunta(pregunta: PreguntaEntity)
 
+    @Query("SELECT EXISTS(SELECT 1 FROM respuestas WHERE preguntaId = :preguntaId)")
+    suspend fun tieneRespuestas(preguntaId: Long): Boolean
+
     @Update
     suspend fun actualizarPregunta(pregunta: PreguntaEntity)
 

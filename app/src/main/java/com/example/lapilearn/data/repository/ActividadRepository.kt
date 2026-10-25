@@ -25,8 +25,12 @@ class ActividadRepository(private val db: AppDatabase) {
         daoPreguntas.insertarPregunta(pregunta.copy(orden = orden))
     }
 
-    suspend fun actualizarPregunta(pregunta: PreguntaEntity) =
+    suspend fun actualizarPregunta(pregunta: PreguntaEntity) = db.withTransaction {
+        require(!daoPreguntas.tieneRespuestas(pregunta.id)) {
+            "No puedes editar esta pregunta porque ya tiene respuestas guardadas."
+        }
         daoPreguntas.actualizarPregunta(pregunta)
+    }
 
     private fun intentos(valor: String): Int {
         return valor.toIntOrNull()?.takeIf {
