@@ -15,6 +15,7 @@ class AsignacionRepository(private val db: AppDatabase) {
     val asignaciones = asignacionDao.observarTodas()
     val intentos = asignacionDao.observarIntentos()
     val respuestas = asignacionDao.observarRespuestas()
+    val preguntas = asignacionDao.observarPreguntas()
 
     suspend fun crearAsignacion(actividadId: Int, alias: String, responsable: String): String =
         db.withTransaction {

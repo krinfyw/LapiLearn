@@ -12,6 +12,7 @@ import com.example.lapilearn.ui.screens.inicio.LoginDocenteScreen
 import com.example.lapilearn.ui.screens.inicio.LoginAsistenteScreen
 import com.example.lapilearn.ui.screens.asistente.AsistentePanelScreen
 import com.example.lapilearn.ui.screens.asistente.AsistenteResultadosScreen
+import com.example.lapilearn.ui.screens.asistente.AsistenteDetalleScreen
 import com.example.lapilearn.viewModels.AsistentePanelViewModel
 import com.example.lapilearn.ui.screens.docente.CatalogoActividades
 import com.example.lapilearn.ui.screens.docente.EditarActividadScreen
@@ -77,6 +78,12 @@ fun AppNavigation() {
         }
         composable(Screen.AsistenteResultados.route) {
             AsistenteResultadosScreen(
+                navController = navController,
+                viewModel = asistentePanelViewModel
+            )
+        }
+        composable(Screen.AsistenteDetalle.route) {
+            AsistenteDetalleScreen(
                 navController = navController,
                 viewModel = asistentePanelViewModel
             )

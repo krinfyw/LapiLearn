@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.lapilearn.model.EstadoAsignacion
 import com.example.lapilearn.model.ResumenAsignacion
+import com.example.lapilearn.navigation.Screen
 import com.example.lapilearn.ui.component.Cabecera
 import com.example.lapilearn.ui.theme.coralColor
 import com.example.lapilearn.ui.theme.coralLight
@@ -80,6 +81,10 @@ fun AsistenteResultadosScreen(
                 items(estado.asignaciones, key = { it.asignacion.id }) { resumen ->
                     AsignacionCard(
                         resumen = resumen,
+                        onVerRespuestas = {
+                            viewModel.verRespuestas(resumen)
+                            navController.navigate(Screen.AsistenteDetalle.route)
+                        },
                         onObservacion = { viewModel.abrirObservacion(resumen) }
                     )
                 }
@@ -146,6 +151,7 @@ private fun ResumenGeneral(asignaciones: List<ResumenAsignacion>) {
 @Composable
 private fun AsignacionCard(
     resumen: ResumenAsignacion,
+    onVerRespuestas: () -> Unit,
     onObservacion: () -> Unit
 ) {
     val asignacion = resumen.asignacion
@@ -207,6 +213,16 @@ private fun AsignacionCard(
                 Dato("Intentos", "${resumen.intentosUsados} de ${actividad?.intentosPermitidos ?: "-"}")
                 Dato("Aciertos", resumen.aciertos.toString())
                 Dato("Errores", resumen.errores.toString())
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                onClick = onVerRespuestas,
+                modifier = Modifier.heightIn(min = 48.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = tealColor)
+            ) {
+                Text(text = "Ver respuestas", fontSize = 14.sp)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
