@@ -1,8 +1,9 @@
 package com.example.lapilearn.viewModels
+
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lapilearn.data.local.AppDatabase
+import com.example.lapilearn.data.repository.UsuarioRepository
 import com.example.lapilearn.model.DocenteUiState
 import com.example.lapilearn.model.DocenteErrores
 import com.example.lapilearn.utils.isValidEmail
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class DocenteViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val docenteDao = AppDatabase.getInstance(application).docenteDao()
+    private val repository = UsuarioRepository(application)
 
     private val _uiState = MutableStateFlow(DocenteUiState())
     val uiState: StateFlow<DocenteUiState> = _uiState.asStateFlow()
@@ -72,7 +73,7 @@ class DocenteViewModel(application: Application) : AndroidViewModel(application)
 
         val estado = _uiState.value
         viewModelScope.launch {
-            val docente = docenteDao.login(estado.correo, estado.contrasena)
+            val docente = repository.loginDocente(estado.correo, estado.contrasena)
             if (docente != null) {
                 _uiState.update { it.copy(usuarioId = docente.id) }
                 onExito()

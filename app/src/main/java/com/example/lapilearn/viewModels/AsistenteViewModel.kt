@@ -3,7 +3,7 @@ package com.example.lapilearn.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lapilearn.data.local.AppDatabase
+import com.example.lapilearn.data.repository.UsuarioRepository
 import com.example.lapilearn.model.AsistenteUiState
 import com.example.lapilearn.model.AsistenteErrores
 import com.example.lapilearn.utils.isValidEmail
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class AsistenteViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val asistenteDao = AppDatabase.getInstance(application).asistenteDao()
+    private val repository = UsuarioRepository(application)
 
     private val _uiState = MutableStateFlow(AsistenteUiState())
     val uiState: StateFlow<AsistenteUiState> = _uiState.asStateFlow()
@@ -72,7 +72,7 @@ class AsistenteViewModel(application: Application) : AndroidViewModel(applicatio
 
         val estado = _uiState.value
         viewModelScope.launch {
-            val asistente = asistenteDao.login(estado.correo, estado.contrasena)
+            val asistente = repository.loginAsistente(estado.correo, estado.contrasena)
             if (asistente != null) {
                 _uiState.update { it.copy(nombre = asistente.nombre, usuarioId = asistente.id) }
                 onExito()

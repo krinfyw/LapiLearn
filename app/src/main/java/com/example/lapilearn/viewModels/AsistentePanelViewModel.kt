@@ -3,10 +3,8 @@ package com.example.lapilearn.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.withTransaction
-import com.example.lapilearn.data.local.AppDatabase
+import com.example.lapilearn.data.repository.AsignacionRepository
 import com.example.lapilearn.data.local.entity.ActividadEntity
-import com.example.lapilearn.data.local.entity.AsignacionEntity
 import com.example.lapilearn.model.AsistentePanelUiState
 import com.example.lapilearn.model.ResumenAsignacion
 import com.example.lapilearn.utils.AsignacionReglas
@@ -32,18 +30,17 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
         val DIFICULTADES = listOf("Fácil", "Media", "Avanzada")
     }
 
-    private val db = AppDatabase.getInstance(application)
-    private val asignacionDao = db.asignacionDao()
+    private val repository = AsignacionRepository(application)
 
     // Estado de filtros y diálogos. Los datos se combinan desde Room.
     private val _form = MutableStateFlow(AsistentePanelUiState())
 
     val uiState: StateFlow<AsistentePanelUiState> = combine(
         _form,
-        db.actividadDao().observarTodas(),
-        asignacionDao.observarTodas(),
-        asignacionDao.observarIntentos(),
-        asignacionDao.observarRespuestas()
+        repository.actividades,
+        repository.asignaciones,
+        repository.intentos,
+        repository.respuestas
     ) { form, actividades, asignaciones, intentos, respuestas ->
         form.copy(
             actividades = filtrar(actividades, form),
@@ -107,29 +104,7 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
         _form.update { it.copy(guardando = true, errorAlias = null) }
         viewModelScope.launch {
             try {
-                val codigo = db.withTransaction {
-                    val vigente = requireNotNull(db.actividadDao().porId(actividad.id)) { "La actividad ya no existe." }
-                    require(vigente.estado == "Disponible") { "Esta actividad ya no está disponible." }
-                    require(db.estudianteDao().preguntas(vigente.id).isNotEmpty()) {
-                        "Esta actividad aún no tiene preguntas. Avisa a la docente o UTP."
-                    }
-
-                    var candidato = AsignacionReglas.generarCodigo()
-                    while (asignacionDao.contarCodigo(candidato) > 0) {
-                        candidato = AsignacionReglas.generarCodigo()
-                    }
-
-                    asignacionDao.insertar(
-                        AsignacionEntity(
-                            aliasEstudiante = form.alias.trim(),
-                            actividadId = vigente.id,
-                            codigo = candidato,
-                            asistente = responsable,
-                            creadaEn = System.currentTimeMillis()
-                        )
-                    )
-                    candidato
-                }
+                val codigo = repository.crearAsignacion(actividad.id, form.alias, responsable)
                 _form.update { it.copy(codigoGenerado = codigo, guardando = false) }
             } catch (e: CancellationException) {
                 throw e
@@ -168,7 +143,10 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
 
     fun onObservacionChange(valor: String) =
         _form.update {
-            it.copy(textoObservacion = valor.take(AsignacionReglas.MAX_OBSERVACION), errorObservacion = null)
+            it.copy(
+                textoObservacion = valor.take(AsignacionReglas.MAX_OBSERVACION),
+                errorObservacion = null
+            )
         }
 
     fun guardarObservacion() {
@@ -183,7 +161,10 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
 
         viewModelScope.launch {
             try {
-                asignacionDao.actualizarObservacion(resumen.asignacion.id, form.textoObservacion.trim())
+                repository.actualizarObservacion(
+                    resumen.asignacion.id,
+                    form.textoObservacion.trim()
+                )
                 cerrarObservacion()
             } catch (e: CancellationException) {
                 throw e

@@ -6,10 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.withTransaction
-import com.example.lapilearn.data.local.entity.ActividadEntity
-import java.util.UUID
-import com.example.lapilearn.data.local.AppDatabase
+import com.example.lapilearn.data.repository.ActividadRepository
 import com.example.lapilearn.data.local.entity.PreguntaEntity
 import com.example.lapilearn.model.Actividad
 import kotlinx.coroutines.CancellationException
@@ -18,17 +15,14 @@ import kotlinx.coroutines.launch
 
 // Room es la fuente de datos del catálogo.
 class ActividadViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = AppDatabase.getInstance(application)
-    private val dao = db.actividadDao()
-    private val daoPreguntas = db.estudianteDao()
+    private val repository = ActividadRepository(application)
     var preguntasGuardadas by mutableStateOf<List<PreguntaEntity>>(emptyList())
         private set
 
-    val actividades = dao.observarTodas()
-        .map { lista -> lista.map { it.toModel() } }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
+    val actividades = repository.actividades
+        .stateIn( //Mantiene en memoria el último valor emitido, haciendo que multiples pantallas puedan ver el mismo StateFlow en vez de ejecutar la misma consulta para cada una
+            viewModelScope, //Define el contexto en el se ejecutará la recoleción de los datos de la base de datos  en segundo plano
+            SharingStarted.Eagerly, //Compienza de inmediato a recolectar y transformar los datos, sin esperar a que se dibuje la pantalla
             emptyList()
         )
     var errorGuardado by mutableStateOf<String?>(null)
@@ -46,9 +40,11 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
     fun seleccionar(id: Int) {
         idSeleccionada = id
     }
+
     fun seleccionarPregunta(pregunta: PreguntaEntity) {
         preguntaSeleccionada = pregunta
     }
+
     fun obtenerSeleccionada(): Actividad? {
         val actividad = actividades.value.find {
             it.id == idSeleccionada
@@ -64,20 +60,20 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
 
     suspend fun obtenerActividadPorId(): Actividad? {
         val id = idSeleccionada ?: return null
-        return dao.porId(id)?.toModel()
+        return repository.porId(id)
     }
 
     fun consultarPreguntas() {
         viewModelScope.launch {
             val actividad = obtenerActividadPorId()
             if (actividad != null) {
-                preguntasGuardadas = daoPreguntas.preguntas(actividad.id)
+                preguntasGuardadas = repository.preguntas(actividad.id)
             }
         }
     }
 
     fun actualizar(actividad: Actividad, onGuardada: () -> Unit) = guardar(onGuardada) {
-        actualizarEnRoom(actividad)
+        repository.actualizar(actividad)
     }
 
     // ROOM GENERA EL ID DEFINITIVO
@@ -91,7 +87,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             errorGuardado = null
             try {
-                val id = agregarEnRoom(actividad)
+                val id = repository.agregar(actividad)
                 seleccionar(id.toInt())
 
                 actividadNueva = actividad.copy(
@@ -127,69 +123,6 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                 guardandoActividad = false
             }
         }
-    }
-
-    private fun intentos(valor: String): Int {
-        return valor.toIntOrNull()?.takeIf {
-            it > 0
-        } ?: throw IllegalArgumentException(
-            "Ingresa un número de intentos mayor que cero."
-        )
-    }
-
-    // GUARDAR ACTIVIDAD EN ROOM
-    private suspend fun agregarEnRoom(actividad: Actividad): Long {
-        require(actividad.titulo.isNotBlank()) {
-            "El título es obligatorio."
-        }
-        require(actividad.objetivo.isNotBlank()) {
-            "El objetivo es obligatorio."
-        }
-        return dao.insertar(
-            ActividadEntity(
-                titulo = actividad.titulo.trim(),
-                modulo = actividad.modulo,
-                curso = actividad.curso,
-                dificultad = actividad.dificultad,
-                objetivo = actividad.objetivo.trim(),
-                intentosPermitidos = intentos(actividad.intentos),
-                estado = "Borrador",
-                codigo = UUID.randomUUID().toString()
-                    .replace("-", "")
-                    .uppercase(),
-                instrucciones = actividad.instrucciones
-            )
-        )
-    }
-
-    private suspend fun actualizarEnRoom(
-        actividad: Actividad
-    ) = db.withTransaction {
-        require(actividad.objetivo.isNotBlank()) {
-            "El objetivo es obligatorio."
-        }
-        val original = requireNotNull(
-            dao.porId(actividad.id)
-        ) {
-            "La actividad ya no existe."
-        }
-        if (actividad.estado == "Disponible") {
-            require(daoPreguntas.preguntas(actividad.id).isNotEmpty()) {
-                "Agrega al menos una pregunta antes de dejar la actividad disponible."
-            }
-        }
-        dao.actualizar(
-            original.copy(
-                titulo = actividad.titulo,
-                modulo = actividad.modulo,
-                curso = actividad.curso,
-                dificultad = actividad.dificultad,
-                objetivo = actividad.objetivo.trim(),
-                intentosPermitidos = intentos(actividad.intentos),
-                instrucciones = actividad.instrucciones,
-                estado = actividad.estado
-            )
-        )
     }
 
     fun agregarPregunta(
@@ -233,25 +166,20 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                 require(retroalimentacion.isNotBlank()) {
                     "Escribe la retroalimentación."
                 }
-                db.withTransaction {
-                    val orden = daoPreguntas.ultimoOrdenPregunta(
-                        actividad.id
-                    ) + 1
-                    daoPreguntas.insertarPregunta(
-                        PreguntaEntity(
-                            actividadId = actividad.id,
-                            orden = orden,
-                            textoApoyo = textoApoyo,
-                            enunciado = enunciado,
-                            opcionA = opcionA,
-                            opcionB = opcionB,
-                            opcionC = opcionC,
-                            opcionD = opcionD,
-                            correcta = correcta,
-                            retroalimentacion = retroalimentacion
-                        )
+                repository.agregarPregunta(
+                    PreguntaEntity(
+                        actividadId = actividad.id,
+                        orden = 0,
+                        textoApoyo = textoApoyo,
+                        enunciado = enunciado,
+                        opcionA = opcionA,
+                        opcionB = opcionB,
+                        opcionC = opcionC,
+                        opcionD = opcionD,
+                        correcta = correcta,
+                        retroalimentacion = retroalimentacion
                     )
-                }
+                )
                 onGuardada()
             } catch (e: CancellationException) {
                 throw e
@@ -263,6 +191,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
+
     fun actualizarPregunta(
         enunciado: String,
         opcionA: String,
@@ -300,7 +229,7 @@ class ActividadViewModel(application: Application) : AndroidViewModel(applicatio
                     "Escribe la retroalimentación."
                 }
                 if (pregunta != null) {
-                    daoPreguntas.actualizarPregunta(
+                    repository.actualizarPregunta(
                         pregunta.copy(
                             enunciado = enunciado,
                             opcionA = opcionA,
