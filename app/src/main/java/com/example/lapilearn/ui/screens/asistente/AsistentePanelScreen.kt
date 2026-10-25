@@ -304,6 +304,9 @@ private fun DialogoAsignar(
 ) {
     if (codigoGenerado == null) {
         AlertDialog(
+            containerColor = creamBg,
+            titleContentColor = inkText,
+            textContentColor = inkText,
             onDismissRequest = { if (!guardando) onCerrar() },
             title = { Text("Asignar \"${actividad.titulo}\"") },
             text = {
@@ -326,14 +329,17 @@ private fun DialogoAsignar(
                 Button(
                     onClick = onConfirmar,
                     enabled = !guardando,
-                    colors = ButtonDefaults.buttonColors(containerColor = tealColor)
-                ) {
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = tealColor,
+                        contentColor = Color.White
+                    )                ) {
                     Text(if (guardando) "Guardando…" else "Generar código")
                 }
             },
             dismissButton = {
-                TextButton(onClick = onCerrar, enabled = !guardando) { Text("Cancelar") }
-            }
+                TextButton(onClick = onCerrar, enabled = !guardando) {
+                    Text("Cancelar", color = tealColor)
+                }            }
         )
     } else {
         AlertDialog(
