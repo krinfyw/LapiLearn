@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lapilearn.data.repository.EstudianteRepository
+import com.example.lapilearn.data.repository.PokemonRepository
 import com.example.lapilearn.model.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.*
@@ -99,6 +100,9 @@ class EstudianteViewModel(
             )
         }
     }
+
+    suspend fun cargarPokemon(sesion: SesionEstudiante): Pokemon? =
+        PokemonRepository.obtener(sesion.aciertos, sesion.preguntas.size)
 
     fun reintentar() {
         val id = _uiState.value.sesion?.intento?.id ?: return

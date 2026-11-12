@@ -15,7 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.lapilearn.model.EstudianteUiState
+import com.example.lapilearn.model.Pokemon
+import com.example.lapilearn.model.SesionEstudiante
 import com.example.lapilearn.ui.theme.tealColor
 import com.example.lapilearn.ui.theme.tealLight
 
@@ -117,19 +120,57 @@ fun RetroalimentacionEstudiante(estado: EstudianteUiState, onSiguiente: () -> Un
 }
 
 @Composable
-fun ResultadoEstudiante(estado: EstudianteUiState, onReintentar: () -> Unit) {
+fun ResultadoEstudiante(
+    estado: EstudianteUiState,
+    onReintentar: () -> Unit,
+    cargarPokemon: suspend (SesionEstudiante) -> Pokemon?
+) {
     val sesion = estado.sesion ?: return
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("¡Terminaste la actividad!", style = MaterialTheme.typography.titleLarge)
         Text("Aciertos: ${sesion.aciertos} de ${sesion.preguntas.size}", style = MaterialTheme.typography.headlineSmall)
         Text("Preguntas para seguir practicando: ${sesion.respuestas.size - sesion.aciertos}")
         Text("Tus respuestas quedaron guardadas en este dispositivo.")
+        if (sesion.finalizada) {
+            key(sesion.intento.id) {
+                val pokemon by produceState<Pokemon?>(initialValue = null) {
+                    value = cargarPokemon(sesion)
+                }
+                pokemon?.let { PokemonResultado(it) }
+            }
+        }
         if (sesion.quedanIntentos) {
             Button(onClick = onReintentar, enabled = !estado.cargando, modifier = Modifier.fillMaxWidth()) {
                 Text("Practicar otra vez")
             }
         } else {
             Text("Completaste los intentos disponibles. Revisa tu avance con tu asistente.")
+        }
+    }
+}
+
+@Composable
+private fun PokemonResultado(pokemon: Pokemon) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = tealLight)
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            pokemon.imagenUrl?.let { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    modifier = Modifier.size(80.dp)
+                )
+            }
+            Text(
+                text = "Tu Pokémon: ${pokemon.nombre.replaceFirstChar { it.uppercase() }}",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
 }

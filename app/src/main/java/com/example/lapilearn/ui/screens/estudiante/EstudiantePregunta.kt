@@ -90,7 +90,11 @@ fun EstudiantePregunta(viewModel: EstudianteViewModel, onSalir: () -> Unit) {
                         PasoEstudiante.INSTRUCCIONES -> InstruccionesEstudiante(estado, viewModel::comenzar)
                         PasoEstudiante.PREGUNTA -> PreguntaEstudiante(estado, viewModel::seleccionar, viewModel::solicitarConfirmacion)
                         PasoEstudiante.RETROALIMENTACION -> RetroalimentacionEstudiante(estado, viewModel::siguiente)
-                        PasoEstudiante.RESULTADO -> ResultadoEstudiante(estado, viewModel::reintentar)
+                        PasoEstudiante.RESULTADO -> ResultadoEstudiante(
+                            estado,
+                            viewModel::reintentar,
+                            viewModel::cargarPokemon
+                        )
                     }
                 }
                 OutlinedButton(
