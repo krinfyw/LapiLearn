@@ -63,7 +63,7 @@ class EstudianteRepository(private val db: AppDatabase) {
         dao.insertarRespuesta(
             RespuestaEntity(
                 intentoId, preguntaId, alternativa,
-                alternativa == siguiente.correcta, System.currentTimeMillis()
+                siguiente.esCorrecta(alternativa), System.currentTimeMillis()
             )
         )
         if (sesion.respuestas.size + 1 == sesion.preguntas.size) dao.finalizar(
@@ -83,7 +83,7 @@ class EstudianteRepository(private val db: AppDatabase) {
             else dao.ultimoIntento(anterior.actividad.id)
         )
         if (ultimo.id != intentoId) return@withTransaction cargar(ultimo.id)
-        require(ultimo.numero < anterior.actividad.intentosPermitidos) { "Ya utilizaste los intentos permitidos. Consulta a tu asistente." }
+        require(anterior.quedanIntentos) { "Ya utilizaste los intentos permitidos. Consulta a tu asistente." }
         val id = dao.insertarIntento(
             IntentoEntity(
                 actividadId = anterior.actividad.id,

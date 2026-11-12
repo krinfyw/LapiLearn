@@ -24,4 +24,6 @@ data class PreguntaEntity(
     val retroalimentacion: String
 ) {
     val alternativas: List<String> get() = listOf(opcionA, opcionB, opcionC, opcionD)
+
+    fun esCorrecta(alternativa: Int): Boolean = alternativa == correcta
 }

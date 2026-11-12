@@ -124,7 +124,7 @@ fun ResultadoEstudiante(estado: EstudianteUiState, onReintentar: () -> Unit) {
         Text("Aciertos: ${sesion.aciertos} de ${sesion.preguntas.size}", style = MaterialTheme.typography.headlineSmall)
         Text("Preguntas para seguir practicando: ${sesion.respuestas.size - sesion.aciertos}")
         Text("Tus respuestas quedaron guardadas en este dispositivo.")
-        if (sesion.intento.numero < sesion.actividad.intentosPermitidos) {
+        if (sesion.quedanIntentos) {
             Button(onClick = onReintentar, enabled = !estado.cargando, modifier = Modifier.fillMaxWidth()) {
                 Text("Practicar otra vez")
             }

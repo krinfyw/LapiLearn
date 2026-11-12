@@ -9,6 +9,7 @@ data class SesionEstudiante(
     val respuestas: List<RespuestaEntity>
 ) {
     val finalizada: Boolean get() = intento.finalizadoEn != null
+    val quedanIntentos: Boolean get() = intento.numero < actividad.intentosPermitidos
     val aciertos: Int get() = respuestas.count { it.esCorrecta }
 }
 
