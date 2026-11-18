@@ -1,5 +1,11 @@
 # LapiLearn
 
+## Integrantes
+
+- Santiago Matheo
+- Vicente Aninao
+- Elias Gonzales
+
 ## Contexto
 
 LapiLearn es una aplicación móvil de apoyo a la nivelación de Lectura y Matemática para estudiantes de 1.º a 4.º básico. Está pensada para utilizarse dentro del establecimiento, bajo la supervisión de docentes y asistentes de aula.
@@ -28,6 +34,9 @@ La información se guarda localmente mediante Room. El proyecto utiliza exclusiv
 - **Corrutinas y Flow:** operaciones asíncronas y observación de datos.
 - **Room y SQLite:** almacenamiento local de usuarios, actividades, preguntas, asignaciones, intentos y respuestas.
 - **Activity Result API:** selección de imágenes desde galería y archivos.
+- **Retrofit y Gson:** consulta de PokéAPI y conversión de su respuesta JSON.
+- **Coil:** carga de la imagen del Pokémon.
+- **JUnit 5, Kotest y MockK:** pruebas unitarias de la lógica.
 
 ## Estructura del proyecto
 
@@ -69,7 +78,7 @@ Los datos y resultados se comunican a la interfaz mediante estado observable.
 - Android Studio compatible con la configuración del proyecto.
 - Android SDK y dependencias indicados en los archivos de Gradle.
 - Un teléfono o emulador con Android 9 (API 28) o superior.
-- Conexión a internet para descargar las dependencias durante la configuración inicial.
+- Conexión a internet para descargar las dependencias durante la configuración inicial y obtener el Pokémon del resultado.
 
 ### Ejecución
 
@@ -90,7 +99,72 @@ Los datos y resultados se comunican a la interfaz mediante estado observable.
 | Docente | docente@duoc.cl | 123456 |
 | Asistente | asistente@duoc.cl | 123456 |
 
-Integrantes:
-- Santiago Aburto
-- Elias Gonzales
-- Vicente Aninao
+## API externa
+
+La aplicación consulta PokéAPI para mostrar un Pokémon al terminar una actividad. El resultado de la actividad permanece disponible si falla la consulta.
+
+Endpoint utilizado por Retrofit y Gson.
+
+```text
+GET https://pokeapi.co/api/v2/pokemon/{nombre}/
+```
+
+| Aciertos | Valor de `{nombre}` |
+| --- | --- |
+| Cero aciertos | `bulbasaur` |
+| Algunos aciertos | `charmander` |
+| Todas las respuestas correctas | `pikachu` |
+
+La respuesta aporta el nombre del Pokémon y `sprites.front_default`, con la URL de su imagen. Coil carga esa imagen. [Documentación de PokéAPI](https://pokeapi.co/docs/v2#pokemon)
+
+## Backend
+
+La integración con el microservicio Spring Boot está pendiente. Los inicios de sesión actuales consultan las cuentas ficticias guardadas en Room.
+
+## Pruebas unitarias
+
+Desde la raíz del proyecto, ejecuta las pruebas y abre el informe con PowerShell.
+
+```powershell
+.\gradlew.bat :app:testDebugUnitTest
+Invoke-Item .\app\build\reports\tests\testDebugUnitTest\index.html
+```
+
+## Generar el APK firmado
+
+La variante `release` utiliza la configuración `signingConfigs` de `app/build.gradle.kts`. Cada integrante que genere el APK firmado debe disponer de la llave de evaluación y crear `keystore.properties` en la raíz del proyecto con los valores de su equipo.
+
+```properties
+storeFile=RUTA_DONDE_ESTA_EL_JKS
+storePassword=CONTRASENA_DEL_ARCHIVO
+keyAlias=lapilearn
+keyPassword=CONTRASENA_DE_LA_CLAVE
+```
+
+Completa las contraseñas elegidas al crear la llave, confirma el alias y usa `/` en la ruta. `keystore.properties` y los archivos `.jks` están excluidos de Git. Conserva la llave y las credenciales para entregarlas al docente por el canal acordado.
+
+Después, genera el APK firmado desde la raíz del proyecto.
+
+```powershell
+.\gradlew.bat :app:assembleRelease
+```
+
+El APK generado por ese comando queda en `app/build/outputs/apk/release/app-release.apk`. El APK creado anteriormente con el asistente de Android Studio está en `app/release/app-release.apk`.
+
+## Evidencias de firma
+
+### APK generado
+
+![apkLocalizacion](readMeImagenes/apkLocalizacion.png)
+
+### Firma verificada
+
+![firmaVerificada](readMeImagenes/firmaVerificada.png)
+
+### Llave de evaluación
+
+![llaveLocalizacion](readMeImagenes/llaveLocalizacion.png)
+
+### Configuración de Gradle
+
+![configuracionGradle](readMeImagenes/configuracionGradle.png)
