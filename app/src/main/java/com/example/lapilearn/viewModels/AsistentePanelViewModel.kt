@@ -23,7 +23,11 @@ import kotlinx.coroutines.launch
  * ficticio (código temporal) y muestra resultados básicos y observaciones.
  * Todo viene de Room, la misma base que usan docente y estudiante.
  */
-class AsistentePanelViewModel(application: Application) : AndroidViewModel(application) {
+class AsistentePanelViewModel(
+    application: Application,
+    private val repository: AsignacionRepository
+) : AndroidViewModel(application) {
+    constructor(application: Application) : this(application, AsignacionRepository(application))
 
     companion object {
         val MODULOS = listOf("Lectura", "Matemática")
@@ -31,7 +35,6 @@ class AsistentePanelViewModel(application: Application) : AndroidViewModel(appli
         val DIFICULTADES = listOf("Fácil", "Media", "Avanzada")
     }
 
-    private val repository = AsignacionRepository(application)
 
     // Estado de filtros y diálogos. Los datos se combinan desde Room.
     private val _form = MutableStateFlow(AsistentePanelUiState())

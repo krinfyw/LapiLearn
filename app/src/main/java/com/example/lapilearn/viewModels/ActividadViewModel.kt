@@ -14,8 +14,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 // Room es la fuente de datos del catálogo.
-class ActividadViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = ActividadRepository(application)
+class ActividadViewModel(
+    application: Application,
+    private val repository: ActividadRepository
+) : AndroidViewModel(application) {
+    constructor(application: Application) : this(application, ActividadRepository(application))
     var preguntasGuardadas by mutableStateOf<List<PreguntaEntity>>(emptyList())
         private set
 

@@ -20,8 +20,8 @@ object PokemonRepository {
             .create(PokeApi::class.java)
     }
 
-    suspend fun obtener(aciertos: Int, total: Int): Pokemon? = try {
-        val respuesta = api.obtenerPokemon(pokemonParaResultado(aciertos, total))
+    internal suspend fun obtener(aciertos: Int, total: Int, servicio: PokeApi = api): Pokemon? = try {
+        val respuesta = servicio.obtenerPokemon(pokemonParaResultado(aciertos, total))
         respuesta.name?.let { Pokemon(it, respuesta.sprites?.frontal) }
     } catch (_: IOException) {
         null
@@ -38,11 +38,11 @@ object PokemonRepository {
     }
 }
 
-private interface PokeApi {
+internal interface PokeApi {
     @GET("pokemon/{nombre}/")
     suspend fun obtenerPokemon(@Path("nombre") nombre: String): PokemonRespuesta
 }
 
-private data class PokemonRespuesta(val name: String?, val sprites: PokemonSprites?)
+internal data class PokemonRespuesta(val name: String?, val sprites: PokemonSprites?)
 
-private data class PokemonSprites(@SerializedName("front_default") val frontal: String?)
+internal data class PokemonSprites(@SerializedName("front_default") val frontal: String?)

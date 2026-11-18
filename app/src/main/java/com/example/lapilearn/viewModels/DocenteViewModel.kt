@@ -13,9 +13,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DocenteViewModel(application: Application) : AndroidViewModel(application) {
+class DocenteViewModel(
+    application: Application,
+    private val repository: UsuarioRepository
+) : AndroidViewModel(application) {
+    constructor(application: Application) : this(application, UsuarioRepository(application))
 
-    private val repository = UsuarioRepository(application)
 
     private val _uiState = MutableStateFlow(DocenteUiState())
     val uiState: StateFlow<DocenteUiState> = _uiState.asStateFlow()
